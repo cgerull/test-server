@@ -1,5 +1,8 @@
+/.vscode
 /.deployment
-/__pycache__
+__pycache__/
+*.py[cod]
 /azure-deploy.sh
 /azure.env
 /venv
+*.log

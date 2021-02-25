@@ -14,8 +14,9 @@ import platform
 secret_file = '/run/secrets/my_secret_key'
 config_file = 'srv-config.yml'
 srv_config = {
-    'title': 'Echo Webserver',
-    'footer': 'Default configuration'
+    'title': 'Testserver',
+    'footer': 'Default configuration',
+    'ping': 'Testserver is alive'
 }
 localhost = socket.gethostname()
 
@@ -57,6 +58,25 @@ def api_config():
     resp.headers['Server-IP'] = socket.gethostbyname(localhost)
     return resp
 
+#
+# REST API
+@app.route('/api/get-my-ip', methods=['GET'])
+def api_get_my_ip():
+    """Build api endpoint for config data."""
+    read_config(config_file, srv_config)
+    resp = jsonify(get_remote_ip())
+    return resp
+
+#
+# Responsivness check
+@app.route('/ping', methods=['GET'])
+def ping():
+    """Return alive message."""
+    read_config(config_file, srv_config)
+    resp = make_response(jsonify(srv_config['ping']))
+    return resp
+
+
 
 def build_response_data():
     """
@@ -74,9 +94,25 @@ def build_response_data():
         'local_ip': socket.gethostbyname(localhost),
         'container_name': localhost,
         'secret': get_secret_key(),
-        'remote_ip': request.remote_addr
+        'remote_ip': get_remote_ip()
     }
 
+def get_remote_ip():
+    """
+    Get client ip address, trying to resolve any
+    proxies that modify the request.
+    """
+    ip = ''
+    if 'HTTP_X_REAL_IP' in request.environ :
+        ip = request.environ['HTTP_X_REAL_IP']
+    elif 'X_REAL_IP' in request.environ :
+        ip = request.environ['X_REAL_IP']
+    elif 'HTTP_X_FORWARDED_FOR' in request.environ :
+        ip = request.environ['HTTP_X_FORWARDED_FOR']
+    else:
+        ip = request.remote_addr
+    
+    return ip
 
 def get_secret_key():
     """
