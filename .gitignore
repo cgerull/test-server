@@ -1,0 +1,5 @@
+/.deployment
+/__pycache__
+/azure-deploy.sh
+/azure.env
+/venv
