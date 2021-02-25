@@ -25,14 +25,17 @@ The server returns an page with this information:
 
 ```bash
 
-Welcome to the demo webserver
+Welcome to Testserver
+Local server time is 2021-02-25 10:11:37.775058
+The server ip is: 192.168.178.40
+Platform: macOS-11.2.1-arm64-arm-64bit
+System: Darwin
+Processor: arm
+Architecture: 64bit 
+The container name is localhost
+The secret key is Only_the_default_secret_key
 
-Local server time is 2021-01-08 11:49:21.861499
-The server ip is: 10.0.18.4
-The container name is 27f2a1769ce1
-The secret key is SwarmEtcdSecret
-
-Your request came from: 10.255.0.2
+Your request came from: 127.0.0.1
 ```
 
 The value of the secret key depends on the place of definition.

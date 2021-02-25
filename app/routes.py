@@ -14,8 +14,9 @@ import platform
 secret_file = '/run/secrets/my_secret_key'
 config_file = 'srv-config.yml'
 srv_config = {
-    'title': 'Echo Webserver',
-    'footer': 'Default configuration'
+    'title': 'Testserver',
+    'footer': 'Default configuration',
+    'ping': 'Testserver is alive'
 }
 localhost = socket.gethostname()
 
@@ -56,6 +57,16 @@ def api_config():
     resp = make_response(jsonify(srv_config))
     resp.headers['Server-IP'] = socket.gethostbyname(localhost)
     return resp
+
+#
+# Responsivness check
+@app.route('/ping', methods=['GET'])
+def ping():
+    """Return alive message."""
+    read_config(config_file, srv_config)
+    resp = make_response(jsonify(srv_config['ping']))
+    return resp
+
 
 
 def build_response_data():
