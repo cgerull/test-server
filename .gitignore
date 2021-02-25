@@ -3,3 +3,5 @@
 /azure-deploy.sh
 /azure.env
 /venv
+/instance/
+*.log
