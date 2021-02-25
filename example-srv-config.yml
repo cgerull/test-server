@@ -1,0 +1,11 @@
+---
+title: 'Testserver'
+footer: 'External configuration from srv-config.yml'
+use_mysql: false
+mysql_endpoint: 'localhost:3306'
+mysql_user: 'mysql_user'
+mysql_password: 'mysql_pass'
+use_rabbitmq: false
+rbmq_endpoint: 'localhost:5672'
+rbmq_user: 'rbmq_user'
+rbmq_password: 'rbmq_pass'
