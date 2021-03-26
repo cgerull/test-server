@@ -70,4 +70,4 @@ jobs:
           context: .
           platforms: linux/amd64,linux/arm64,linux/arm32
           push: true
-          tags: cgerull/testserver:$VERSION
+          tags: testserver:$VERSION
