@@ -67,7 +67,7 @@ jobs:
       - name: Print env
         run: |
           echo "Image: env.IMAGE_NAME"
-          echo "Tag: "env.TAG"
+          echo "Tag: env.TAG"
       # - name: Build and push
       #   uses: docker/build-push-action@v2
       #   with:
