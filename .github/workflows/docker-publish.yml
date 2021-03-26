@@ -26,12 +26,15 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Test environment
+        env:
+          DOCKERUSER: ${{ secrets.DOCKERHUB_USER }}"
+          IMAGE: ${{ secrets.MYIMAGE}}"
         run: |
-          echo ****** Secrets *******
-          echo user ${{ secrets.DOCKERHUB_USER }}
-          echo imagename ${{ secrets.MYIMAGE}}
-          echo ******* Env **********
-          env
+          echo '****** Secrets *******'
+          echo "user: ${{ secrets.DOCKERHUB_USER }}"
+          echo "dockeruser: $DOCKERUSER"
+          echo "imagename: ${{ secrets.MYIMAGE}}"
+          echo "image: $IMAGE"
 
 
       - name: Run tests
