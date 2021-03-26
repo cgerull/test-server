@@ -61,7 +61,7 @@ jobs:
           [[ "${{ github.ref }}" == "refs/tags/"* ]] && VER=$(echo $VER | sed -e 's/^v//')
           echo "second VER $VER"
           # Use Docker `latest` tag convention
-          [ "$VER" =~ /\d.*/ ] && echo "TAG=SVER" >> $GITHUB_ENV
+          [["$VER" =~ [0-9].* ]] && echo "TAG=SVER" >> $GITHUB_ENV
 
           echo TAG $VER
           # echo "TAG=SVER" >> $GITHUB_ENV
