@@ -25,6 +25,14 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+      - name: Test environment
+        run: |
+          echo ****** Secrets *******
+          echo user ${{ secrets.DOCKERHUB_USER }}
+          echo imagename ${{ secrets.MYIMAGE}}
+          echo ******* Env **********
+          env
+
 
       - name: Run tests
         run: |
