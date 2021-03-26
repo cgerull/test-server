@@ -53,16 +53,17 @@ jobs:
           password: ${{ secrets.DOCKERHUB_SECRET }}
       - name: Set image name and version
         run: |
+          echo "ref ${{ github.ref }}"
           # Strip git ref prefix from version
           VER=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
-
+          echo "first VER $VER"
           # Strip "v" prefix from tag name
           [[ "${{ github.ref }}" == "refs/tags/"* ]] && VER=$(echo $VER | sed -e 's/^v//')
-
+          echo "second VER $VER"
           # Use Docker `latest` tag convention
-          # [ "$VER" =~ /\d.*/ ] && TAG=latest
+          [ "$VER" =~ /\d.*/ ] && echo "TAG=SVER" >> $GITHUB_ENV
 
-          echo TAG=$VER
+          echo TAG $VER
           # echo "TAG=SVER" >> $GITHUB_ENV
       - name: Print env
         run: |
