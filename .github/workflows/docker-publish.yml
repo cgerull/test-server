@@ -35,46 +35,6 @@ jobs:
             docker build . --file Dockerfile
           fi
 
-  # Push image to GitHub Packages.
-  # See also https://docs.docker.com/docker-hub/builds/
-  # build:
-  #   # Ensure test job passes before pushing image.
-  #   needs: test
-
-  #   runs-on: ubuntu-latest
-  #   if: github.event_name == 'push'
-
-  #   steps:
-  #     - uses: actions/checkout@v2
-
-  #     - name: Build image
-  #       run: docker build . --file Dockerfile --tag $IMAGE_NAME
-
-  #     - name: Log into registry
-  #       run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
-
-  #     - name: Push image
-  #       run: |
-  #         IMAGE_ID=docker.pkg.github.com/${{ github.repository }}/$IMAGE_NAME
-
-  #         # Change all uppercase to lowercase
-  #         IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
-
-  #         # Strip git ref prefix from version
-  #         VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
-
-  #         # Strip "v" prefix from tag name
-  #         [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
-
-  #         # Use Docker `latest` tag convention
-  #         [ "$VERSION" == "master" ] && VERSION=latest
-
-  #         echo IMAGE_ID=$IMAGE_ID
-  #         echo VERSION=$VERSION
-
-  #         docker tag $IMAGE_NAME $IMAGE_ID:$VERSION
-  #         docker push $IMAGE_ID:$VERSION
-
   push:
     needs: test
     runs-on: ubuntu-latest
@@ -94,9 +54,6 @@ jobs:
           password: ${{ secrets.DOCKERHUB_SECRET }}
       - name: Set image name and version
         run: |
-          # Change all uppercase to lowercase
-          IMAGE_NAME=$(echo $IMAGE_NAME| tr '[A-Z]' '[a-z]')
-
           # Strip git ref prefix from version
           VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
 
@@ -106,7 +63,6 @@ jobs:
           # Use Docker `latest` tag convention
           [ "$VERSION" == "master" ] && VERSION=latest
 
-          echo IMAGE_NAME=$IMAGE_NAME
           echo VERSION=$VERSION
       - name: Build and push
         uses: docker/build-push-action@v2
@@ -114,4 +70,4 @@ jobs:
           context: .
           platforms: linux/amd64,linux/arm64,linux/arm32
           push: true
-          tags: $IMAGE_NAME:$VERSION
+          tags: cgerull/testserver:$VERSION
