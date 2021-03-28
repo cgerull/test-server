@@ -1,4 +1,4 @@
-# Echo Server
+# TestServer
 
 Simple test server for orchestration and deployment testing.
 

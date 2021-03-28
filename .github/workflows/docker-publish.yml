@@ -3,7 +3,7 @@ on:
   push:
     # Publish `master` as Docker `latest` image.
     branches:
-      - '**'
+      - 'master'
 
     # Publish `v1.2.3` tags as releases.
     tags:
@@ -52,24 +52,22 @@ jobs:
           password: ${{ secrets.DOCKERHUB_SECRET }}
       - name: Set image name and version
         run: |
-          echo "ref ${{ github.ref }}"
           # Strip git ref prefix from version
           VER=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
-          echo "first VER $VER"
+
           # Strip "v" prefix from tag name
           [[ "${{ github.ref }}" == "refs/tags/"* ]] && VER=$(echo $VER | sed -e 's/^v//')
-          echo "second VER $VER"
+
           # Use Docker `latest` tag convention
           [[ $VER =~ [0-9].* ]] && echo "TAG=$VER" >> $GITHUB_ENV
 
           IMAGE="${{ env.IMAGE_NAME }}:${{ env.TAG }}"
-          echo modified image $IMAGE
           echo "IMAGE=$IMAGE" >> $GITHUB_ENV
-      - name: Print env
-        run: |
-          echo "Imagename: ${{ env.IMAGE_NAME }}"
-          echo "Tag: ${{ env.TAG }}"
-          echo "Image: ${{ env.IMAGE }}"
+      # - name: Print env
+      #   run: |
+      #     echo "Imagename: ${{ env.IMAGE_NAME }}"
+      #     echo "Tag: ${{ env.TAG }}"
+      #     echo "Image: ${{ env.IMAGE }}"
       - name: Build and push
         uses: docker/build-push-action@v2
         with:
