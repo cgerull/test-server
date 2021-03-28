@@ -1,5 +1,4 @@
 name: Docker
-
 on:
   push:
     # Publish `master` as Docker `latest` image.
@@ -63,8 +62,7 @@ jobs:
           # Use Docker `latest` tag convention
           [[ $VER =~ [0-9].* ]] && echo "TAG=$VER" >> $GITHUB_ENV
 
-          echo TAG $VER
-          IMAGE="${{ env.IMAGE_NAME }}:$VER"
+          IMAGE="${{ env.IMAGE_NAME }}:${{ env.TAG }}"
           echo modified image $IMAGE
           echo "IMAGE=$IMAGE" >> $GITHUB_ENV
       - name: Print env
