@@ -60,7 +60,9 @@ jobs:
 
           # Use Docker `latest` tag convention
           [[ $VER =~ [0-9].* ]] && echo "TAG=$VER" >> $GITHUB_ENV
-
+          echo VER $VER
+          echo TAG ${{ env.TAG }}
+          
           IMAGE="${{ env.IMAGE_NAME }}:${{ env.TAG }}"
           echo "IMAGE=$IMAGE" >> $GITHUB_ENV
       # - name: Print env
