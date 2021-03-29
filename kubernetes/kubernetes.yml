@@ -96,10 +96,10 @@ metadata:
     traefik.ingress.kubernetes.io/rewrite-target: /$2
 spec:
   rules:
-    - host: "pi4b"
+    - host: "ubuntu.gerull.nl"
       http:
         paths:
-          - path: /testserver/
+          - path: /testsrv/
             backend:
               serviceName: testserver-test-server
               servicePort: 80
