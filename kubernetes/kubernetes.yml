@@ -67,7 +67,7 @@ spec:
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
-              containerPort: 80
+              containerPort: 8080
               protocol: TCP
           livenessProbe:
             httpGet:
@@ -96,10 +96,10 @@ metadata:
     traefik.ingress.kubernetes.io/rewrite-target: /$2
 spec:
   rules:
-    - host: "ubuntu.gerull.nl"
+    - host: "pi4b"
       http:
         paths:
-          - path: /
+          - path: /testserver/
             backend:
               serviceName: testserver-test-server
               servicePort: 80
