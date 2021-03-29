@@ -1,0 +1,126 @@
+---
+# Source: test-server/templates/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: testserver-test-server
+  labels:
+    helm.sh/chart: test-server-0.1.0
+    app.kubernetes.io/name: test-server
+    app.kubernetes.io/instance: testserver
+    app.kubernetes.io/version: "latest"
+    app.kubernetes.io/managed-by: Helm
+---
+# Source: test-server/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: testserver-test-server
+  labels:
+    helm.sh/chart: test-server-0.1.0
+    app.kubernetes.io/name: test-server
+    app.kubernetes.io/instance: testserver
+    app.kubernetes.io/version: "latest"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: test-server
+    app.kubernetes.io/instance: testserver
+---
+# Source: test-server/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: testserver-test-server
+  labels:
+    helm.sh/chart: test-server-0.1.0
+    app.kubernetes.io/name: test-server
+    app.kubernetes.io/instance: testserver
+    app.kubernetes.io/version: "latest"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: test-server
+      app.kubernetes.io/instance: testserver
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: test-server
+        app.kubernetes.io/instance: testserver
+    spec:
+      serviceAccountName: testserver-test-server
+      securityContext:
+        {}
+      containers:
+        - name: test-server
+          securityContext:
+            {}
+          image: "cgerull/testserver:latest"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+            {}
+---
+# Source: test-server/templates/ingress.yaml
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: testserver-test-server
+  labels:
+    helm.sh/chart: test-server-0.1.0
+    app.kubernetes.io/name: test-server
+    app.kubernetes.io/instance: testserver
+    app.kubernetes.io/version: "latest"
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+    kubernetes.io/ingress.class: traefik
+    traefik.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  rules:
+    - host: "ubuntu.gerull.nl"
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: testserver-test-server
+              servicePort: 80
+---
+# Source: test-server/templates/tests/test-connection.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "testserver-test-server-test-connection"
+  labels:
+    helm.sh/chart: test-server-0.1.0
+    app.kubernetes.io/name: test-server
+    app.kubernetes.io/instance: testserver
+    app.kubernetes.io/version: "latest"
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args: ['testserver-test-server:80']
+  restartPolicy: Never
