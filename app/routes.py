@@ -10,15 +10,19 @@ import os
 import yaml
 import platform
 
+from app.redis_tools import get_redis
+from app.redis_tools import increment_redis_counter
+
 # Modules constants
 secret_file = '/run/secrets/my_secret_key'
 config_file = 'srv-config.yml'
 srv_config = {
     'title': 'Testserver',
     'footer': 'Default configuration',
-    'ping': 'Testserver is alive'
+    'pong': 'Testserver is alive'
 }
 localhost = socket.gethostname()
+use_redis = get_redis()
 
 #
 # HTML page
@@ -28,11 +32,15 @@ def index():
     """Build response data and send page to requester."""
     read_config(config_file, srv_config)
     response_data = build_response_data()
+    if use_redis:
+        increment_redis_counter(use_redis, app.config['REDIS_HTML_COUNTER'])
+        page_view = int(use_redis.get(app.config['REDIS_HTML_COUNTER']))
     resp = make_response(
         render_template('index.html',
         title=srv_config['title'],
         footer=srv_config['footer'],
-        resp=response_data)
+        resp=response_data,
+        page_view=page_view)
         )
     resp.headers['Server-IP'] = socket.gethostbyname(localhost)
     return resp
@@ -40,6 +48,7 @@ def index():
 
 #
 # REST API
+#######################################################################
 @app.route('/api/echo', methods=['GET'])
 def api_echo():
     """Build api endpoint for echo data."""
@@ -49,7 +58,7 @@ def api_echo():
 
 
 #
-# REST API
+# Return configuration
 @app.route('/api/config', methods=['GET'])
 def api_config():
     """Build api endpoint for config data."""
@@ -59,7 +68,7 @@ def api_config():
     return resp
 
 #
-# REST API
+# Report the callers IP
 @app.route('/api/get-my-ip', methods=['GET'])
 def api_get_my_ip():
     """Build api endpoint for config data."""
@@ -73,11 +82,13 @@ def api_get_my_ip():
 def ping():
     """Return alive message."""
     read_config(config_file, srv_config)
-    resp = make_response(jsonify(srv_config['ping']))
+    resp = make_response(jsonify(srv_config['pong']))
     return resp
 
 
-
+#
+# Utiliy functions
+# ############################################################################
 def build_response_data():
     """
     Build a dictionary with timestamp, server ip,
