@@ -22,7 +22,7 @@ srv_config = {
     'pong': 'Testserver is alive'
 }
 localhost = socket.gethostname()
-use_redis = get_redis()
+redis_connection = get_redis()
 
 #
 # HTML page
@@ -32,15 +32,16 @@ def index():
     """Build response data and send page to requester."""
     read_config(config_file, srv_config)
     response_data = build_response_data()
-    if use_redis:
-        increment_redis_counter(use_redis, app.config['REDIS_HTML_COUNTER'])
-        page_view = int(use_redis.get(app.config['REDIS_HTML_COUNTER']))
+    page_views=0
+    if redis_connection:
+        increment_redis_counter(redis_connection, app.config['REDIS_HTML_COUNTER'])
+        page_views = int(redis_connection.get(app.config['REDIS_HTML_COUNTER']))
     resp = make_response(
         render_template('index.html',
         title=srv_config['title'],
         footer=srv_config['footer'],
         resp=response_data,
-        page_view=page_view)
+        page_views=page_views)
         )
     resp.headers['Server-IP'] = socket.gethostbyname(localhost)
     return resp

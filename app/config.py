@@ -7,9 +7,8 @@ class Config(object):
     TESTING = False
 
     APP_NAME = 'Test server'
-    APP_FOOTER = 'Default configuration'
+    APP_FOOTER = os.environ.get('APP_FOOTER') or 'Default configuration'
 
-    SECRET_KEY = 'Only_the_default_secret_key'
     SECRET_FILE = '/run/secrets/my_secret_key'
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'Only_the_default_secret_key'
     CONFIG_FILE = './srv-config.yml'
