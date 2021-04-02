@@ -16,4 +16,9 @@
     <p> 
         Your request came from: {{ resp.remote_ip }}<br>
     </p>
+    {% if 0 < page_views %}
+    <p>
+        This page has been viewed {{ page_views }} times.
+    </p>
+    {% endif %}
 {% endblock %}
