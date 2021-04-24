@@ -9,9 +9,9 @@ class Config(object):
     APP_NAME = 'Test server'
     APP_FOOTER = os.environ.get('APP_FOOTER') or 'Default configuration'
 
-    SECRET_FILE = '/run/secrets/my_secret_key'
+    SECRET_FILE = os.environ.get('SECRET_FILE') or '/run/secrets/my_secret_key'
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'Only_the_default_secret_key'
-    CONFIG_FILE = './srv-config.yml'
+    CONFIG_FILE = os.environ.get('SECRET_KEY') or './srv-config.yml'
     
     ACCESS_LOG = os.environ.get('ACCESS_LOG') or None
     ERROR_LOG = os.environ.get('ERROR_LOG') or None

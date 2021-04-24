@@ -7,3 +7,6 @@ __pycache__/
 /venv
 /instance/
 *.log
+/helm/
+/kubernetes/
+srv-config.yml
