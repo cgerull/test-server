@@ -56,8 +56,13 @@ Configuration by setting environment variables.
 
 ```bash
 
+"CONFIG_FILE = ./srv-config.yml"
 "PORT=8080"
 'LOGFORMAT="%(h)s %(l)s %(t)s %({Server-IP}o)s %(l)s %(r)s %(s)s %(b)s %(a)s"'
 "LOGLVL=INFO"
 "SECRET_KEY=DockerComposeSecret"
+# Secret file will overrule SECRET_KEY
+"SECRET_FILE=/run/secrets/my_secret_key"
+"REDIS_URL = localhost:6379"
+
 ```
