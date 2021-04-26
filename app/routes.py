@@ -14,13 +14,6 @@ from app.redis_tools import get_redis
 from app.redis_tools import increment_redis_counter
 
 # Modules constants
-secret_file = '/run/secrets/my_secret_key'
-config_file = 'srv-config.yml'
-srv_config = {
-    'title': 'Testserver',
-    'footer': 'Default configuration',
-    'pong': 'Testserver is alive'
-}
 localhost = socket.gethostname()
 redis_connection = get_redis()
 
@@ -30,7 +23,6 @@ redis_connection = get_redis()
 @app.route('/index', methods=['GET', 'POST'])
 def index():
     """Build response data and send page to requester."""
-    read_config(config_file, srv_config)
     response_data = build_response_data()
     page_views=0
     if redis_connection:
@@ -38,8 +30,8 @@ def index():
         page_views = int(redis_connection.get(app.config['REDIS_HTML_COUNTER']))
     resp = make_response(
         render_template('index.html',
-        title=srv_config['title'],
-        footer=srv_config['footer'],
+        title=app.config['APP_NAME'],
+        footer=app.config['APP_FOOTER'],
         resp=response_data,
         page_views=page_views)
         )
@@ -63,8 +55,7 @@ def api_echo():
 @app.route('/api/config', methods=['GET'])
 def api_config():
     """Build api endpoint for config data."""
-    read_config(config_file, srv_config)
-    resp = make_response(jsonify(srv_config))
+    resp = make_response(jsonify("Not yet implemented."))
     resp.headers['Server-IP'] = socket.gethostbyname(localhost)
     return resp
 
@@ -73,7 +64,7 @@ def api_config():
 @app.route('/api/get-my-ip', methods=['GET'])
 def api_get_my_ip():
     """Build api endpoint for config data."""
-    read_config(config_file, srv_config)
+    # read_config(config_file, srv_config)
     resp = jsonify(get_remote_ip())
     return resp
 
@@ -82,8 +73,8 @@ def api_get_my_ip():
 @app.route('/ping', methods=['GET'])
 def ping():
     """Return alive message."""
-    read_config(config_file, srv_config)
-    resp = make_response(jsonify(srv_config['pong']))
+    # read_config(config_file, srv_config)
+    resp = make_response(jsonify(app.config['PONG']))
     return resp
 
 
@@ -135,30 +126,9 @@ def get_secret_key():
     """
     secret = ''
     try:
-        f = open(secret_file, 'r')
+        f = open(app.config['SECRET_FILE'], 'r')
         secret = f.read()
     except:
-        # no file, just return empty string
-        secret = os.environ.get('SECRET_KEY') or 'Only_the_default_secret_key'
+        # no file, return configured secret
+        secret = app.config['SECRET_KEY']
     return secret
-
-
-def read_config(config_file, srv_config):
-    """
-    Read configuration from file and update srv_config dictionary.
-    If no config file exists, a default configuration is used.
-    Args:
-        configuration file
-        configuration dictonary
-    """
-    try:
-        with open(config_file, 'r') as stream:
-            config_data = (yaml.safe_load(stream))
-            for key in config_data.keys():
-                srv_config[key] = config_data[key]
-    # Don't print an error on missing configuration 
-    # Filter with
-    except FileNotFoundError:
-        pass   
-    except Exception as exc:
-        print("Can't read configuration. {}".format(exc))
