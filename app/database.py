@@ -13,13 +13,6 @@ import platform
 import mysql.connector
 
 # Modules constants
-secret_file = '/run/secrets/my_secret_key'
-config_file = 'srv-config.yml'
-srv_config = {
-    'title': 'Testserver',
-    'footer': 'Default configuration',
-    'ping': 'Testserver is alive'
-}
 localhost = socket.gethostname()
 
 #
@@ -27,49 +20,56 @@ localhost = socket.gethostname()
 @app.route('/database', methods=['GET', 'POST'])
 def db_view():
     """Build response data and send page to requester."""
-    read_config(config_file, srv_config)
     response_data = build_response_data()
     resp = make_response(
-        render_template('index.html',
-        title=srv_config['title'],
-        footer=srv_config['footer'],
+        render_template('db.html',
+        title=app.config['APP_NAME'],
+        footer=app.config['APP_FOOTER'],
         resp=response_data)
         )
     resp.headers['Server-IP'] = socket.gethostbyname(localhost)
     return resp
 
-    def build_response_data():
+def build_response_data():
     """
-    Build a dictionary with timestamp, server ip,
-    server name, secret and requester ip.
+    Build a dictionary with DB data.
     """
-    localhost = socket.gethostname()
-
     return {
-        'now': datetime.now().isoformat(sep=' '),
-        'platform': platform.platform(),
-        'system': platform.system(),
-        'processor': platform.processor(),
-        'architecture': ' '.join(map(str,platform.architecture())),
-        'local_ip': socket.gethostbyname(localhost),
-        'container_name': localhost,
-        'secret': get_secret_key(),
-        'remote_ip': get_remote_ip()
+        'Not yet implemented.'
     }
 
-    def get_cursor():
-        cursor = None
-        try:
-            with.mysql.connector.connect(
-                host="pi4b",
-                user="mysql_user"
-                password="mysql_user"
-            ) as connection:
-                cursor = connection.cursor 
-        except Error as e:
-            print(e)
-        return cursor
+def get_cursor():
+    """
+    Create DB connection and return a DB cursor. 
+    Credentials and parameter are provided by the app.config
+    obeject.
+    """
+    cursor = None
+    try:
+        with mysql.connector.connect(
+            host = app.config['DB_SERVER'],
+            user = app.config['DB_USER'],
+            password = get_db_secret()
+        ) as connection:
+            cursor = connection.cursor 
+    except Exception as e:
+        print(e)
+    return cursor
         
-
+def get_db_secret():
+    """
+    Return secret key from:
+        Docker secret file or
+        Environment variable SECRET_KEY or
+        a default value
+    """
+    secret = ''
+    try:
+        f = open(app.config['DB_SECRET_FILE'], 'r')
+        secret = f.read()
+    except:
+        # no file, return configured secret
+        secret = app.config['DB_SECRET_KEY']
+    return secret
 
 
