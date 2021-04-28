@@ -23,3 +23,9 @@ class Config(object):
     REDIS_PORT = os.environ.get('REDIS_PORT') or 6379
     REDIS_HTML_COUNTER = os.environ.get('REDIS_HTML_COUNTER') or'api_srv_html_counter'
     REDIS_API_COUNTER = os.environ.get('REDIS_API_COUNTER') or'api_srv_counter'
+
+    DB_SERVER = os.environ.get('DB_SERVER') or None
+    DB_USER = os.environ.get('DB_USER') or 'root'
+    DB_SECRET_FILE = os.environ.get('DB_SECRET_FILE') or '/run/secrets/db_pw'
+    DB_SECRET_KEY = os.environ.get('DB_SECRET_KEY') or ''
+    DB_NAME = os.environ.get('DB_NAME') or None

@@ -56,7 +56,6 @@ Configuration by setting environment variables.
 
 ```bash
 
-"CONFIG_FILE = ./srv-config.yml"
 "PORT=8080"
 'LOGFORMAT="%(h)s %(l)s %(t)s %({Server-IP}o)s %(l)s %(r)s %(s)s %(b)s %(a)s"'
 "LOGLVL=INFO"
@@ -64,5 +63,11 @@ Configuration by setting environment variables.
 # Secret file will overrule SECRET_KEY
 "SECRET_FILE=/run/secrets/my_secret_key"
 "REDIS_URL = localhost:6379"
+"DB_SERVER = localhost"
+"DB_USER = test_user"
+"DB_SECRET_KEY = test_user_password"
+# Secret file will overrule DB_SECRET_KEY
+"DB_SECRET_FILE = /run/secrets/db_pw"
+"DB_NAME = test_db"
 
 ```
