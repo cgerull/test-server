@@ -11,12 +11,15 @@ TEMPLATES = app/TEMPLATES/*
 help:           ## Show this help.
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
-$(VENV)/bin/activate: requirements.txt	## Create python venv
+setup: requirements.txt	## Create python venv
 	python3 -m venv $(VENV)
+	source ./$(VENV)/bin/activate
+	./$(VENV)/bin/pip install --update pip
 	./$(VENV)/bin/pip install -r requirements.txt
 
 # venv is a shortcut target
-venv: $(VENV)/bin/activate	## Activate venv environment
+venv: ## Activate venv environment
+	source ./$(VENV)/bin/activate	
 
 test-server.tar : Dockerfile $(PY_FILES) $(TEMPLATES)	## Build docker image and save as archive
 	docker build -t test-server .
@@ -35,6 +38,9 @@ run: venv 		## Run local flask development server
 	./$(VENV)/bin/python -m flask run
 
 clean:		## Clean all artefacts
+	if [ $(which deactivate) ]; then
+	  deactivate
+	fi
 	rm -rf $(VENV)
 	find . -type f -name '*.pyc' -delete
 	rm test-server.tar
