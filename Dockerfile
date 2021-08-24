@@ -1,4 +1,4 @@
-FROM alpine:3.12
+FROM alpine:3.14
 # Use alpine linux as base image
 
 RUN apk --no-cache add \
