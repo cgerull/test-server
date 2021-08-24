@@ -1,15 +1,17 @@
 """
 Route module for timeconverter web api
 """
-from app import app
-from flask import (request, jsonify, render_template, redirect,
-                   url_for, flash, make_response)
 from datetime import datetime
 import socket
-import os
-import yaml
 import platform
+# import os
+# import yaml
 
+
+
+from flask import (request, jsonify, render_template, make_response)
+
+from app import app
 from app.redis_tools import get_redis
 from app.redis_tools import increment_redis_counter
 
@@ -86,7 +88,7 @@ def build_response_data():
     Build a dictionary with timestamp, server ip,
     server name, secret and requester ip.
     """
-    localhost = socket.gethostname()
+    # localhost = socket.gethostname()
 
     return {
         'now': datetime.now().isoformat(sep=' '),
@@ -105,17 +107,17 @@ def get_remote_ip():
     Get client ip address, trying to resolve any
     proxies that modify the request.
     """
-    ip = ''
+    client_ip = ''
     if 'HTTP_X_REAL_IP' in request.environ :
-        ip = request.environ['HTTP_X_REAL_IP']
+        client_ip = request.environ['HTTP_X_REAL_IP']
     elif 'X_REAL_IP' in request.environ :
-        ip = request.environ['X_REAL_IP']
+        client_ip = request.environ['X_REAL_IP']
     elif 'HTTP_X_FORWARDED_FOR' in request.environ :
-        ip = request.environ['HTTP_X_FORWARDED_FOR']
+        client_ip = request.environ['HTTP_X_FORWARDED_FOR']
     else:
-        ip = request.remote_addr
-    
-    return ip
+        client_ip = request.remote_addr
+
+    return client_ip
 
 def get_secret_key():
     """
@@ -126,9 +128,9 @@ def get_secret_key():
     """
     secret = ''
     try:
-        f = open(app.config['SECRET_FILE'], 'r')
-        secret = f.read()
-    except:
+        with open(app.config['SECRET_FILE'], 'r') as file:
+            secret = file.read()
+    except IOError:
         # no file, return configured secret
         secret = app.config['SECRET_KEY']
     return secret
