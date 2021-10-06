@@ -35,8 +35,12 @@ bp = Blueprint('echo', __name__, url_prefix='/echo')
 def echo():
     """Build response data and send page to requester."""
     response_data = build_response_data()
-    page_views=0
-    redis_connection = get_redis_connection(current_app.config['REDIS_URL'])
+    page_views = 0
+    redis_connection = get_redis_connection(
+        current_app.config['REDIS_SERVER'],
+        current_app.config['REDIS_PORT'],
+        current_app.config['REDIS_PASSWORD'],
+        )
 
     if redis_connection:
         page_views = increment_redis_counter(
