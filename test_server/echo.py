@@ -22,6 +22,8 @@ import platform
 from flask import (
     Blueprint, current_app, render_template, request
 )
+from flask.helpers import url_for
+from werkzeug.utils import redirect
 
 from test_server.persistent_counter import get_redis_connection
 from test_server.persistent_counter import increment_redis_counter
@@ -29,9 +31,13 @@ from test_server.persistent_counter import increment_redis_counter
 
 # from test_server.db import get_db
 
-bp = Blueprint('echo', __name__, url_prefix='/echo')
+bp = Blueprint('echo', __name__, url_prefix='/')
 
-@bp.route('/', methods=['GET'])
+@bp.route('/')
+def index():
+    return redirect(url_for('.echo'))
+
+@bp.route('/echo', methods=['GET'])
 def echo():
     """Build response data and send page to requester."""
     response_data = build_response_data()

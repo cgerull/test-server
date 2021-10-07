@@ -22,7 +22,7 @@ def get_redis_connection(host, port=6379, password=None):
                 password = password
                 )
 
-        except Exception as exc:
+        except redis.ConnectionError as exc:
             print("Error connecting to Redis: {}".format(exc), file=sys.stderr)
     return redis_connection
 
@@ -45,7 +45,7 @@ def increment_redis_counter(redis_connection, counter='counter'):
             else:
                 redis_connection.set(counter, "1")
                 value = 1
-        except Exception as exc:
+        except redis.ConnectionError as exc:
             print("Error connecting to Redis: {}".format(exc), file=sys.stderr)
     print("page_views: {}".format(value), file=sys.stderr)
     return value
@@ -63,6 +63,6 @@ def get_redis_counter(redis_connection, counter='counter'):
     if redis_connection:
         try:
             value = redis_connection.get(counter)
-        except Exception as exc:
+        except redis.ConnectionError as exc:
             print("Error connecting to Redis: {}".format(exc), file=sys.stderr)
     return value

@@ -19,27 +19,46 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item active">
-                <a class="nav-link" href="{{ url_for('.echo') }}">Echo <span class="sr-only">(current)</span></a>
+                <a class="nav-link" href="{{ url_for('echo.echo') }}">Echo <span class="sr-only">(current)</span></a>
                 </li>
 
                 <li class="nav-item">
-                <a class="nav-link disabled" href="{{ url_for('.echo') }}" tabindex="-1" aria-disabled="true">Status</a>
+                <a class="nav-link disabled" href="{{ url_for('auth.register') }}" tabindex="-1" aria-disabled="true">Status</a>
                 </li>
 
-                <li class="nav-item">
-                <a class="nav-link disabled" href="{{ url_for('.echo') }}" tabindex="-1" aria-disabled="true">Database</a>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Database
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                      <a class="dropdown-item" href="#">Blog</a>
+                      <a class="dropdown-item" href="#">Log</a>
+                    </div>
                 </li>
             </ul>
-            <form class="form-inline my-2 my-lg-0">
+            <ul class="navbar-nav ml-auto">
+                {% if session['user_id'] %}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {{ g.user['username'] }}
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                      <a class="dropdown-item" href="{{ url_for('auth.logout') }}">Logout</a>
+                    </div>
+                </li>
+                {% else %}
+                <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('auth.login') }}">Login</a>
+                </li>
+                {% endif %}
+            </ul>
+            <!-- <form class="form-inline my-2 my-lg-0">
                 <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
                 <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-            </form>
+            </form> -->
             </div>
         </nav>
         <section class="content">
-            <header>
-            {% block header %}{% endblock %}
-            </header>
             {% for message in get_flashed_messages() %}
             <div class="flash">{{ message }}</div>
             {% endfor %}
@@ -48,6 +67,9 @@
 
                 </div>
                 <div class="col">
+                    <header>
+                        {% block header %}{% endblock %}
+                    </header>
                     {% block content %}{% endblock %} 
                 </div>
                 <div class="col">
