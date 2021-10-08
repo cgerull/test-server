@@ -1,12 +1,8 @@
 /.vscode
 /.deployment
+/.coverage
 __pycache__/
 *.py[cod]
-/azure-deploy.sh
-/azure.env
 /venv
 /instance/
 *.log
-/helm/
-/kubernetes/
-srv-config.yml
