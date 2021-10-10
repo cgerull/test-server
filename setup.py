@@ -10,3 +10,11 @@ setup(
         "flask",
     ],
 )
+
+[tool:pytest]
+testpaths = tests
+
+[coverage:run]
+branch = True
+source =
+    test_server

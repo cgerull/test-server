@@ -1,11 +1,10 @@
 # This is a basic workflow that is manually triggered
 
-name: Manual workflow
+name: Linting and unit testing
 
 # Run on every push.
 on:
   push:
-
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -19,3 +18,5 @@ jobs:
     # Runs a single command using the runners shell
     - name: install
       run: make install
+    - name: lint
+      run: make lint
