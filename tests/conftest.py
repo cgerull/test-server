@@ -15,6 +15,9 @@ def app():
 
     app = create_app({
         'TESTING': True,
+        'ENV': 'test',
+        'SECRET_FILE': None,
+        'SECRET_KEY': 'dev',
         'DATABASE': db_path,
         'DB_TYPE': 'sqlite',
         'REDIS_SERVER': None
