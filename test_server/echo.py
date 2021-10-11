@@ -20,7 +20,7 @@ import socket
 import platform
 
 from flask import (
-    Blueprint, current_app, render_template, request
+    Blueprint, current_app, render_template, request, flash
 )
 from flask.helpers import url_for
 from werkzeug.utils import redirect
@@ -29,7 +29,7 @@ from test_server.persistent_counter import get_redis_connection
 from test_server.persistent_counter import increment_redis_counter
 # from werkzeug.security import check_password_hash, generate_password_hash
 
-# from test_server.db import get_db
+from test_server.db import get_db
 
 bp = Blueprint('echo', __name__, url_prefix='/')
 
@@ -42,25 +42,34 @@ def echo():
     """Build response data and send page to requester."""
     response_data = build_response_data()
     page_views = 0
-    redis_connection = get_redis_connection(
-        current_app.config['REDIS_SERVER'],
-        current_app.config['REDIS_PORT'],
-        current_app.config['REDIS_PASSWORD'],
-        )
+    db = get_db()
+    error = None
 
-    if redis_connection:
+    if current_app.config['REDIS_SERVER'] is not None:
+        redis_connection = get_redis_connection(
+            current_app.config['REDIS_SERVER'],
+            current_app.config['REDIS_PORT'],
+            current_app.config['REDIS_PASSWORD'],
+            )
+    
+    if redis_connection is not None:
         page_views = increment_redis_counter(
             redis_connection,
             current_app.config['REDIS_HTML_COUNTER'])
 
-    # resp = make_response(
-    #     render_template('index.html',
-    #     title=current_app.config['APP_NAME'],
-    #     footer=current_app.config['APP_FOOTER'],
-    #     resp=response_data,
-    #     page_views=page_views)
-    #     )
-    # resp.headers['Server-IP'] = socket.gethostbyname(hostname)
+    if db is not None:
+        try:
+            db.execute(
+                "INSERT INTO req_log (response_code, request_url, request_from_ip) VALUES (?, ?, ?)",
+                (200, request.url, response_data['remote_ip']),
+            )
+            db.commit()
+        except db.IntegrityError:
+            error = f"Can't add record to request log."
+        except db.OperationalError as e:
+            error = f"Can't add record to request log. Caught {e}"
+
+    flash(error)
 
     return render_template('echo/echo.html',resp=response_data, page_views=page_views)
 
@@ -111,10 +120,13 @@ def get_secret_key():
         a default value
     """
     secret = ''
-    try:
-        with open(current_app.config['SECRET_FILE'], mode = 'r', encoding = 'utf_8') as file:
-            secret = file.read()
-    except IOError:
-        # no file, return configured secret
+    if current_app.config['SECRET_FILE'] is not None:
+        try:
+            with open(current_app.config['SECRET_FILE'], mode = 'r', encoding = 'utf_8') as file:
+                secret = file.read()
+        except IOError:
+            # no file, return configured secret
+            secret = current_app.config['SECRET_KEY']
+    else:
         secret = current_app.config['SECRET_KEY']
     return secret

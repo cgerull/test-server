@@ -16,10 +16,10 @@ CREATE TABLE post (
   FOREIGN KEY (author_id) REFERENCES user (id)
 );
 
-CREATE TABLE request (
+CREATE TABLE req_log (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   response_code INTEGER,
   request_url TEXT,
-  request_ip TEXT
+  request_from_ip TEXT
 );

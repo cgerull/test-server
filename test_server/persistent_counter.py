@@ -3,6 +3,7 @@ Redis functions.
 
 Redis connection and utility functions.
 """
+from datetime import datetime
 import redis
 import sys
 
@@ -21,9 +22,11 @@ def get_redis_connection(host, port=6379, password=None):
                 port = port,
                 password = password
                 )
-
+            redis_connection.set("connected", datetime.now().isoformat(sep=' '))
         except redis.ConnectionError as exc:
-            print("Error connecting to Redis: {}".format(exc), file=sys.stderr)
+            print("Error creating Redis connection: {}".format(exc), file=sys.stderr)
+            redis_connection = None
+
     return redis_connection
 
 

@@ -7,6 +7,6 @@ INSERT INTO post (title, body, author_id, created)
 VALUES
   ('test title', 'test' || x'0a' || 'body', 1, '2018-01-01 00:00:00');
 
-INSERT INTO request (response_code, request_url, request_ip)
+INSERT INTO req_log (response_code, request_url, request_from_ip)
 VALUES
 (200, "http://localhost:5001/echo", "192.168.1.1")
