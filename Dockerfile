@@ -16,8 +16,8 @@ RUN apk --no-cache add \
 
 USER web
 WORKDIR /home/web
-COPY . /home/web/
-
+COPY app /home/web/app
+COPY requirements.txt run_gunicorn.sh wsgi.py /home/web/
 
 ENV PATH=$PATH:/home/web/.local/bin \
     PORT=8080 \
