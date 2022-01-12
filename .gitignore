@@ -5,6 +5,7 @@ __pycache__/
 /azure-deploy.sh
 /azure.env
 /venv
+/.venv
 /instance/
 *.log
 /helm/
