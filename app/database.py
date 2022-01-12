@@ -1,5 +1,5 @@
 """
-Database module for test server
+MySql atabase module for test server
 """
 from app import app
 from flask import (request, jsonify, render_template, redirect,

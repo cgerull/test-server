@@ -1,0 +1,12 @@
+{% extends "base-bootstrap.html" %}
+
+{% block content %}
+    <h1>System status</h1>
+    <p>
+        Local server time is {{ resp.now }}<br>
+        Server ip: {{ resp.local_ip }}<br>
+        Platform: {{ resp.platform }}<br>
+        OS version: {{ resp.os_version}}<br>
+        Load average: {{ resp.load_average }}<br>
+    </p>
+{% endblock %}

@@ -2,7 +2,7 @@
 VENV := venv
 REGISTRY := cgerull
 IMAGE := test-server
-TAG =: 0.5.0
+TAG =: 0.8.1
 PY_FILES := app/*.py
 TEMPLATES := app/TEMPLATES/*
 
@@ -13,7 +13,7 @@ help:           ## Show this help.
 
 install:
 	pip install --upgrade pip &&\
-		pip install -r requirements.txt
+	pip install -r requirements.txt
 
 lint:
 	pylint --disable=R,C,E0237,E1101 test_server

@@ -44,6 +44,7 @@ def echo():
     page_views = 0
     db = get_db()
     error = None
+    redis_connection = None
 
     if current_app.config['REDIS_SERVER'] is not None:
         redis_connection = get_redis_connection(

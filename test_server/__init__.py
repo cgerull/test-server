@@ -8,7 +8,9 @@ def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=False)
     app.config.from_mapping(
         SECRET_KEY='dev',
+        DB_TYPE=None,
         DATABASE=os.path.join(app.instance_path, 'test_server.sqlite'),
+        REDIS_SERVER=None,
     )
 
     if test_config is None:
