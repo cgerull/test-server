@@ -33,3 +33,5 @@ RUN pip install --user -r requirements.txt
 EXPOSE 8080
 
 CMD sh run_gunicorn.sh
+
+HEALTHCHECK --interval=15s --timeout=5s --retries=5 CMD curl --fail http://localhost:8080/ping || exit 1
