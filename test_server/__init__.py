@@ -4,7 +4,16 @@ from flask import Flask
 
 
 def create_app(test_config=None):
-    # create and configure the app
+    """ 
+    Create and configure the Flask application.
+
+    Arguments:
+      test_config - Configuration mapping, default is none
+
+    Returns:
+      a Flask application object
+    """
+
     app = Flask(__name__, instance_relative_config=False)
     app.config.from_mapping(
         SECRET_KEY='dev',
@@ -30,23 +39,29 @@ def create_app(test_config=None):
     except OSError:
         pass
 
-    # a simple page that gives the health status
+    # A simple page that gives the health status
     @app.route('/health')
     def health():
         return "{} is healthy.".format(__name__)
 
-    from . import db
-    db.init_app(app)
+    # If not None, initialize database
+    if app.config['DB_TYPE']:
+        from . import db
+        db.init_app(app)
 
+    # Echo page returns the call with some additional information
     from . import echo
     app.register_blueprint(echo.bp)
     app.add_url_rule('/', endpoint='index')
 
+    # Default authentication endpoint, uses Database to store account
+    # information.
     from . import auth
     app.register_blueprint(auth.bp)
 
+    # Print a status page
     from . import status
     app.register_blueprint(status.bp)
-    # app.add_url_rule('/', endpoint='index')
+    # app.add_url_rule('/status/', endpoint='index')
 
     return app
