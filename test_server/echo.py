@@ -66,7 +66,7 @@ def echo():
             )
             db.commit()
         except db.IntegrityError:
-            error = f"Can't add record to request log."
+            error = "Can't add record to request log."
         except db.OperationalError as e:
             error = f"Can't add record to request log. Caught {e}"
 

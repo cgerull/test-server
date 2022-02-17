@@ -17,8 +17,8 @@ import socket
 from flask import (
     Blueprint, current_app, render_template, request
 )
-from flask.helpers import url_for
-from werkzeug.utils import redirect
+# from flask.helpers import url_for
+# from werkzeug.utils import redirect
 
 # from test_server.persistent_counter import get_redis_connection
 # from test_server.persistent_counter import increment_redis_counter
@@ -51,7 +51,8 @@ def build_response_data():
         'now': datetime.now().isoformat(sep=' '),
         'platform': platform.platform(),
         'os_version': platform.version(),
-        'load_average': os.system("uptime | cut -f 4 -d ,")
+        'load_average': os.system("uptime | cut -f 4 -d ,"),
+        'hostname' : hostname
     }
 
 def get_remote_ip():

@@ -128,7 +128,7 @@ def get_secret_key():
     """
     secret = ''
     try:
-        with open(app.config['SECRET_FILE'], 'r') as file:
+        with open(app.config['SECRET_FILE'], 'r', encoding="utf8") as file:
             secret = file.read()
     except IOError:
         # no file, return configured secret
