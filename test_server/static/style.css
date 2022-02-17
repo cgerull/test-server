@@ -1,0 +1,5 @@
+/* Additional formatting for test_server application */
+.flash-cell {
+    background-color: coral;
+    text-align: center;
+}

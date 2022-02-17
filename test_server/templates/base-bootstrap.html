@@ -4,9 +4,10 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <!-- Local styles -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <title>{% block title %}{% endblock %}</title>
   </head>
   <body>
@@ -59,9 +60,13 @@
             </div>
         </nav>
         <section class="content">
-            {% for message in get_flashed_messages() %}
-            <div class="flash">{{ message }}</div>
-            {% endfor %}
+            <div class=""row">
+                <div class="col">  
+                    {% for message in get_flashed_messages() %}
+                    <div class="flash flash-cell">{{ message }}</div>
+                    {% endfor %}
+                </div> 
+            </div>
             <div class="row">
                 <div class="col">
 
