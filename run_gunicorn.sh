@@ -1,7 +1,14 @@
 #!/bin/sh
 #
-    gunicorn wsgi:app \
-    --bind="0.0.0.0:8080" \
+# Init database if defined
+export FLASK_ENVIRONMENT=development
+export FLASK_APP=test_server
+export DB_TYPE=sqlite
+flask init-db 
+
+# Start the application server
+gunicorn wsgi:app \
+    --bind="0.0.0.0:8008" \
     --workers=2 \
     # --worker-class=gevent \
     --timeout=90 \

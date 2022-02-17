@@ -24,10 +24,11 @@ def close_db(e=None):
 
 def init_db():
     db = get_db()
-
-    with current_app.open_resource('sql/schema.sql') as f:
-        db.executescript(f.read().decode('utf8'))
-
+    try:
+        with current_app.open_resource('sql/schema.sql') as f:
+            db.executescript(f.read().decode('utf8'))
+    except sqlite3.OperationalError as exc:
+        print(f"ERROR! Initializing database. Caught {exc}")
 
 @click.command('init-db')
 @with_appcontext

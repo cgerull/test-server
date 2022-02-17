@@ -70,7 +70,8 @@ def echo():
         except db.OperationalError as e:
             error = f"Can't add record to request log. Caught {e}"
 
-    flash(error)
+    if error:
+        flash(error)
 
     return render_template('echo/echo.html',resp=response_data, page_views=page_views)
 
