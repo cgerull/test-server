@@ -19,7 +19,7 @@ lint:
 	pylint --disable=R,C,E0237,E1101 test_server
 
 test:
-	pytest -vv --junitxml=test-results --cov-report term-missing --cov=test_server tests/test_*.py
+	pytest -vv --junitxml=test-results.xml --cov-report term-missing --cov=test_server tests/test_*.py
 
 format:
 	black *.py

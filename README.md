@@ -2,6 +2,7 @@
 
 Simple test server for orchestration and deployment testing.
 
+[![CircleCI](https://circleci.com/gh/cgerull/test-server/tree/development.svg?style=svg)](https://circleci.com/gh/cgerull/test-server/tree/development)
 ## Usage
 
 ### Docker 
