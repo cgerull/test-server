@@ -23,7 +23,7 @@ jobs:
           name: "Run tests"
           command: |
             mkdir -p test-results
-            "make test"
+            make test
 
       - store_test_results:
           path: test-results
