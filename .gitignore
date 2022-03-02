@@ -1,13 +1,13 @@
 /.vscode
 /.deployment
+/.coverage
 __pycache__/
+.pytest_cache
 *.py[cod]
-/azure-deploy.sh
-/azure.env
 /venv
 /.venv
 /instance/
 *.log
-/helm/
-/kubernetes/
+*.tar
 srv-config.yml
+test-results.xml

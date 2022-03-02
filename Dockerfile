@@ -2,13 +2,8 @@ FROM alpine:3.15
 # Use alpine linux as base image
 
 RUN apk --no-cache add \
-    gcc \
     python3 \
-    python3-dev \
     py3-pip \
-    libc-dev \
-    libffi-dev \
-    openssl-dev \
     curl \
  && adduser --disabled-password web \
  && mkdir -p /home/web/log/ \
@@ -16,7 +11,7 @@ RUN apk --no-cache add \
 
 USER web
 WORKDIR /home/web
-COPY app /home/web/app
+COPY test_server /home/web/test_server
 COPY requirements.txt run_gunicorn.sh wsgi.py /home/web/
 
 ENV PATH=$PATH:/home/web/.local/bin \
@@ -34,4 +29,4 @@ EXPOSE 8080
 
 CMD sh run_gunicorn.sh
 
-HEALTHCHECK --interval=15s --timeout=5s --retries=5 CMD curl --fail http://localhost:8080/ping || exit 1
+HEALTHCHECK --interval=15s --timeout=5s --retries=5 CMD curl --fail http://localhost:8080/health || exit 1

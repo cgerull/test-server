@@ -1,0 +1,97 @@
+version: 2.1
+
+orbs:
+  # The python orb contains a set of prepackaged CircleCI configuration you can use repeatedly in your configuration files
+  # Orb commands and jobs help you with common scripting around a language/tool
+  # so you dont have to copy and paste it everywhere.
+  # See the orb documentation here: https://circleci.com/developer/orbs/orb/circleci/python
+  python: circleci/python@1.5.0
+
+jobs:
+  unit-test:
+    docker:
+      - image: cimg/python:3.10.2
+    steps:
+      - checkout
+      - python/install-packages:
+          pkg-manager: pip
+          pip-dependency-file: dev-requirements.txt
+      - run:
+          name: "Run linter"
+          command: "make lint"
+      - run:
+          name: "Run unit tests"
+          command: |
+            make test
+
+      - store_test_results:
+          path: test-results.xml
+
+  test:
+    docker:
+      - image: cimg/base:stable-20.04
+    steps:
+      - checkout
+      - run:
+          name: Build from dockerfile
+          command: |
+            make build
+      - run:
+          name: Scan image
+          command: |
+            make scan
+      - run:
+          name: Compose Up
+          command: |
+            make run
+      - run:
+          name: Check running containers
+          command: |
+            docker ps
+      - run:
+          name: Check container health
+          command: |
+            make check-health
+      - run:
+          name: Compose down
+          command: |
+             make down
+
+  deploy:
+    docker:
+      - image: cimg/base:stable-20.04
+    environment:
+      DOCKER_BUILDKIT: 1
+      BUILDX_PLATFORMS: linux/amd64,linux/arm64,linux/arm/v7,linux/arm/v6
+      PROD_IMAGE: cgerull/testserver:<< pipeline.git.tag >>
+    steps:
+      - checkout
+      - run:
+          name: Log in to docker hub
+          command: |
+            docker login -u $DOCKER_USER -p $DOCKER_PASS
+      - run:
+          name: Build images
+          command: |
+            BUILDX_PLATFORMS="$BUILDX_PLATFORMS" PROD_IMAGE="$PROD_IMAGE" make cross-build
+
+
+# Invoke jobs via workflows
+# See: https://circleci.com/docs/2.0/configuration-reference/#workflows
+workflows:
+  commit: 
+    jobs:
+      - unit-test
+  publish: 
+    jobs:
+      - test:
+          filters:
+            branches:
+              only:
+              - main 
+      - deploy:
+          requires:
+            - test
+          filters:
+            tags:
+              only: /v(\d)+(\.(\d)+)+/

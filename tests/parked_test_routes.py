@@ -18,9 +18,9 @@ def test_get_secret_key():
 #     assert config_items != len(routes.srv_config)
 #     assert 11 == len(routes.srv_config)
 
-def test_healthcheck():
-    health_message = app.config['PONG']
-    assert health_message == routes.ping()
+# def test_healthcheck():
+#     health_message = app.config['PONG']
+#     assert health_message == routes.ping()
 
 # def test_get_secret_key_from_file(tmpdir):
 #     file = 'mysecret'

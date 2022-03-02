@@ -16,7 +16,7 @@ def get_redis():
         try:
             print("Connect to Redis at {}".format(app.config["REDIS_URL"]))
             redis_connection = redis.from_url(app.config["REDIS_URL"])
-        except Exception as exc:
+        except redis.ConnectionError as exc:
             print("Error connecting to Redis: {}".format(exc))
     return redis_connection
 
