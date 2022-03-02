@@ -22,7 +22,6 @@ jobs:
       - name: Run tests
         run: |
           make build
-          make scan 
           
   deploy:
     needs: test-image
