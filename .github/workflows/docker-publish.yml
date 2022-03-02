@@ -46,7 +46,7 @@ jobs:
       - name: Set image name and version
         run: |
           # # Strip git ref prefix from version
-          if [[ echo "${{ github.ref }}" | grep tags ]]
+          if [ $(echo "${{ github.ref }}" | grep tags) ]
             VER=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,' | sed -e 's/^v//')
           else
             VER=latest
