@@ -10,9 +10,10 @@ class Config(object):
     APP_FOOTER = os.environ.get('APP_FOOTER') or 'Default configuration'
     PONG = os.environ.get('PONG') or 'Testserver is alive'
 
-    SECRET_FILE = os.environ.get('SECRET_FILE') or '/run/secrets/my_secret_key'
+    SECRET_FILE = os.environ.get('SECRET_FILE') or '/etc/secrets/my_secret_key'
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'Only_the_default_secret_key'
     CONFIG_FILE = os.environ.get('SECRET_KEY') or './srv-config.yml'
+    DATA_FILE = os.environ.get('DATA_FILE') or '/var/lib/testserver'
     
     ACCESS_LOG = os.environ.get('ACCESS_LOG') or None
     ERROR_LOG = os.environ.get('ERROR_LOG') or None

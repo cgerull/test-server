@@ -1,8 +1,8 @@
 # define the name of the virtual environment directory
-VENV := venv
+VENV := .venv
 REGISTRY := cgerull
 IMAGE := testserver
-TAG =: 0.8.1
+TAG := 0.8.1
 PY_FILES := test_server/*.py
 TEMPLATES := test_server/TEMPLATES/*
 
@@ -25,16 +25,16 @@ format:
 	black *.py
 
 testserver.tar: Dockerfile $(PY_FILES) $(TEMPLATES)	## Build docker image and save as archive
-	docker build -t testserver .
-	@docker save testserver -o testserver.tar;
+	docker build -t testserver:latest .
+	@docker save testserver -o testserver-latest.tar;
 
 scan: 	testserver.tar	## Scan docker image
-	@docker load -i testserver.tar
-	docker scan testserver
+	@docker load -i testserver-latest.tar
+	docker scan testserver:latest
 
 push:	scan		## Push to registry, parameters are REGISTRY, IMAGE and TAG
-	@docker load -i testserver.tar
-	@docker tag testserver $(REGISTRY)/$(IMAGE):$(TAG)
+	@docker load -i testserver-latest.tar
+	@docker tag testserver:latest $(REGISTRY)/$(IMAGE):$(TAG)
 	docker push $(REGISTRY)/$(IMAGE):$(TAG)
 
 clean:		## Clean all artefacts
@@ -43,6 +43,20 @@ clean:		## Clean all artefacts
 
 all: install_modules lint test testserver.tar scan push clean   ## Run all commands
 
-build: testserver.tar scan push clean
+build: testserver.tar
 
-.PHONY: all venv run clean scan push help zsh bash
+cross-build:	## Build for configure architectures and pushes to docker hub.
+	@docker buildx create --name mybuilder --use
+	@docker buildx build --platform ${BUILDX_PLATFORMS} -t ${PROD_IMAGE} --push ./app
+
+up:		## Run docker-compose and start the container
+	@docker-compose up -d 
+
+down:		## Run docker-compose and stop the container
+	@docker-compose down
+
+check-health:	## Check if container is healthy
+	sleep 15
+	@docker ps | grep test-server | grep "(healthy)"
+
+.PHONY: all venv run clean scan push help cross-build

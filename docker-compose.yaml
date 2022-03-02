@@ -1,0 +1,9 @@
+version: '3.6'
+
+services:
+  testserver:
+    image: testserver:latest
+    ports:
+      - '8888:8080'
+    environment:
+      - SECRET_KEY=dockerComposeTestKey
