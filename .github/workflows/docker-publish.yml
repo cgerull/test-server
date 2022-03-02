@@ -13,7 +13,7 @@ on:
 jobs:
    # Run tests.
   # See also https://docs.docker.com/docker-hub/builds/automated-testing/
-  test:
+  test-image:
     runs-on: ubuntu-latest
 
     steps:
@@ -21,15 +21,11 @@ jobs:
 
       - name: Run tests
         run: |
-          if [ -f docker-compose.test.yml ]; then
-            docker-compose --file docker-compose.test.yml build
-            docker-compose --file docker-compose.test.yml run sut
-          else
-            docker build . --file Dockerfile
-          fi
+          make build
+          make scan 
           
   deploy:
-    needs: test
+    needs: test-image
     runs-on: ubuntu-latest
     # if: github.event_name == 'pull_request'
     env:
@@ -51,11 +47,14 @@ jobs:
       - name: Set image name and version
         run: |
           # # Strip git ref prefix from version
-          # VER=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
-          VER=latest
+          if [[ echo "${{ github.ref }}" | grep tags ]]
+            VER=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,' | sed -e 's/^v//')
+          else
+            VER=latest
+          fi
 
           # Strip "v" prefix from tag name
-          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VER=$(echo $VER | sed -e 's/^v//')
+          #[[ "${{ github.ref }}" == "refs/tags/"* ]] && VER=$(echo $VER | sed -e 's/^v//')
 
           # Use Docker `latest` tag convention
           [[ $VER =~ [0-9].* ]] && echo "TAG=$VER" >> $GITHUB_ENV
@@ -64,6 +63,7 @@ jobs:
           
           IMAGE="${{ env.IMAGE_NAME }}:$VER"
           echo "IMAGE=$IMAGE" >> $GITHUB_ENV
+          echo $IMAGE
       # - name: Print env
       #   run: |
       #     echo "Imagename: ${{ env.IMAGE_NAME }}"
