@@ -90,17 +90,17 @@ workflows:
               only:
               - main
               - master
-      - test:
-          requires:
-            - unit-test
-          filters:
-            branches:
-              only:
-              - main
-              - master
-      - deploy:
-          requires:
-            - test
-          filters:
-            tags:
-              only: /v(\d)+(\.(\d)+)+/
+      # - test:
+      #     requires:
+      #       - unit-test
+      #     filters:
+      #       branches:
+      #         only:
+      #         - main
+      #         - master
+      # - deploy:
+      #     requires:
+      #       - test
+      #     filters:
+      #       tags:
+      #         only: /v(\d)+(\.(\d)+)+/
