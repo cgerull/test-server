@@ -4,7 +4,7 @@ REGISTRY := cgerull
 IMAGE := testserver
 TAG := 0.8.1
 PY_FILES := test_server/*.py
-TEMPLATES := test_server/TEMPLATES/*
+TEMPLATES := test_server/templates/*
 
 # default target, when make executed without arguments
 # all: push
