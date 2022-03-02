@@ -63,6 +63,7 @@ jobs:
     environment:
       DOCKER_BUILDKIT: 1
       BUILDX_PLATFORMS: linux/amd64,linux/arm64,linux/arm/v7,linux/arm/v6
+      PROD_IMAGE: cgerull/testserver:<< pipeline.git.tag >>
     steps:
       - checkout
       - run:
@@ -70,9 +71,9 @@ jobs:
           command: |
             docker login -u $DOCKER_USER -p $DOCKER_PASS
       - run:
-          name: Tag golden
+          name: Build images
           command: |
-            BUILDX_PLATFORMS="$BUILDX_PLATFORMS" make cross-build
+            BUILDX_PLATFORMS="$BUILDX_PLATFORMS" PROD_IMAGE="$PROD_IMAGE" make cross-build
 
 
 # Invoke jobs via workflows
@@ -91,3 +92,6 @@ workflows:
       - deploy:
           requires:
             - test
+          filters:
+            tags:
+              only: /v(\d)+(\.(\d)+)+/
