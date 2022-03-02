@@ -88,7 +88,8 @@ workflows:
           filters:
             branches:
               only:
-              - main 
+              - main
+              - master
       - deploy:
           requires:
             - test
