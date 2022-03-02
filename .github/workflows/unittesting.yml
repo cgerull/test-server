@@ -16,8 +16,6 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
     # Runs a single command using the runners shell
-    - name: install
-      run: make install
     - name: lint
       run: make lint
     - name: test
