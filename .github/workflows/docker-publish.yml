@@ -13,7 +13,10 @@ on:
 jobs:
    # Run tests.
   # See also https://docs.docker.com/docker-hub/builds/automated-testing/
+  
   test-image:
+    name: Docker-build-test
+    needs: unit-tests
     runs-on: ubuntu-latest
 
     steps:

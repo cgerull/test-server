@@ -1,6 +1,8 @@
 version: '3.6'
 
 services:
+  redis:
+    image: redis
   testserver:
     image: testserver:latest
     ports:

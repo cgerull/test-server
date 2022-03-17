@@ -15,7 +15,7 @@ jobs:
       - checkout
       - python/install-packages:
           pkg-manager: pip
-          pip-dependency-file: dev-requirements.txt
+          pip-dependency-file: requirements-dev.txt
       - run:
           name: "Run linter"
           command: "make lint"

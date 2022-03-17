@@ -13,7 +13,7 @@ help:           ## Show this help.
 
 install_modules:
 	pip install --upgrade pip &&\
-	pip install -r dev-requirements.txt
+	pip install -r requirements-dev.txt
 
 lint:
 	pylint --disable=R,C,E0237,E1101 test_server
