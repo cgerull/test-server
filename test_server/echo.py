@@ -94,7 +94,9 @@ def build_response_data():
         'local_ip': socket.gethostbyname(hostname),
         'container_name': hostname,
         'secret': get_secret_key(),
-        'remote_ip': get_remote_ip()
+        'remote_ip': get_remote_ip(),
+        'version': current_app.config['VERSION'],
+        'environment': current_app.config['ENV']
     }
 
 def get_remote_ip():

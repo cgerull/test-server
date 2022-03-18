@@ -2,7 +2,7 @@
 VENV := .venv
 REGISTRY := cgerull
 IMAGE := testserver
-TAG := 0.8.1
+TAG := 0.9.1
 PY_FILES := test_server/*.py
 TEMPLATES := test_server/templates/*
 

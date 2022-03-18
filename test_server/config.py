@@ -3,8 +3,9 @@ import os
 
 class Config(object):
     """Read and set configuration values"""
+    VERSION = '1.0.0'
     DEBUG = os.environ.get('DEBUG') or False
-    TESTING = os.environ.get('TESTING') or False
+    ENV = os.environ.get('ENV') or 'Production'
 
     APP_NAME = os.environ.get('APP_NAME') or 'Test server'
     APP_FOOTER = os.environ.get('APP_FOOTER') or 'Default configuration'
