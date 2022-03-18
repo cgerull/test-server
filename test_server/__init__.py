@@ -56,6 +56,7 @@ def create_app(test_config=None):
 
     # A simple page that gives the health status
     @app.route('/health')
+    @metrics.do_not_track()
     def health():
         return "{} is healthy.".format(__name__)
 
