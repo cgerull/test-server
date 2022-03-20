@@ -1,7 +1,0 @@
-export FLASK_ENVIRONMENT=development
-export FLASK_APP=test_server
-export DB_TYPE=sqlite
-# export REDIS_SERVER=localhost
-# export REDIS_PASSWORD=password
-# export REDIS_PASSWORD=$(kubectl get secret --namespace dev-claus redis -o jsonpath="{.data.redis-password}" | base64 --decode)
-flask run

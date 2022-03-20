@@ -1,7 +1,9 @@
 import os
 
 from flask import Flask
-
+from prometheus_client import multiprocess
+from prometheus_client.core import CollectorRegistry
+from prometheus_flask_exporter import PrometheusMetrics
 
 def create_app(test_config=None):
     """ 
@@ -15,7 +17,16 @@ def create_app(test_config=None):
     """
 
     app = Flask(__name__, instance_relative_config=False)
+    
+    # Initialize Prometheus metrics
+    registry = CollectorRegistry()
+    multiprocess.MultiProcessCollector(registry, path='/tmp')
+    metrics = PrometheusMetrics(app, registry=registry) 
+
+    # Set / load app configuration
     app.config.from_mapping(
+        VERSION='0.1.0',
+        ENV='Intern',
         SECRET_KEY='dev',
         DB_TYPE=None,
         DATABASE=os.path.join(app.instance_path, 'test_server.sqlite'),
@@ -29,6 +40,9 @@ def create_app(test_config=None):
         # load the test config if passed in
         app.config.from_mapping(test_config)
 
+    # metrics.info('testserver_info', 'Testserver info', version=app.config['VERSION'], environment=app.config['ENV'])
+
+
     # Modify database name if SQLite is used.
     if ('sqlite' == app.config['DB_TYPE']):
         app.config['DATABASE'] = os.path.join(app.instance_path, app.config['DATABASE'] + '.sqlite')
@@ -39,10 +53,13 @@ def create_app(test_config=None):
     except OSError:
         pass
 
+
     # A simple page that gives the health status
     @app.route('/health')
+    @metrics.do_not_track()
     def health():
         return "{} is healthy.".format(__name__)
+
 
     # If not None, initialize database
     if app.config['DB_TYPE']:
