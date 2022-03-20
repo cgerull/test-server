@@ -6,7 +6,7 @@ Simple test server for orchestration and deployment testing.
 ## Usage
 
 ### Docker 
-Use the docker-compose file to build and run the test server as a container locally.
+Use the local-testing/docker-compose file to build and run the test server as a container locally.
 
 For swarm testing use the docker-stack.yml configuration. Change to the image value to use your own, customized images.
 
@@ -64,6 +64,6 @@ Configuration by setting environment variables.
 "SECRET_KEY=DockerComposeSecret"
 # Secret file will overrule SECRET_KEY
 "SECRET_FILE=/run/secrets/my_secret_key"
-"REDIS_URL = localhost:6379"
+"REDIS_SERVER = localhost"
 
 ```

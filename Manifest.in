@@ -1,4 +1,0 @@
-include test_server/schema.sql
-graft test_server/static
-graft test_server/templates
-global-exclude *.pyc
