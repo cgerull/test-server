@@ -1,7 +1,9 @@
 FROM alpine:3.15
 # Use alpine linux as base image
 
-RUN apk --no-cache add \
+RUN apk update --no-cache \
+ && apk upgrade --no-cache \
+ && apk --no-cache add \
     python3 \
     py3-pip \
     curl \
