@@ -7,7 +7,7 @@ from flask.cli import with_appcontext
 
 def get_db():
     """
-    QQQ Refactor for multiple database drivers.
+    TODO: Refactor for multiple database drivers.
     """
     if 'db' not in g:
         g.db = sqlite3.connect(

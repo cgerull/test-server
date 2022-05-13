@@ -1,9 +1,9 @@
 #!/bin/sh
 #
 # Init database if defined
-export FLASK_ENVIRONMENT=development
-export FLASK_APP=test_server
-export DB_TYPE=sqlite
+# export FLASK_ENV=development
+# export FLASK_APP=test_server
+# export DB_TYPE=sqlite
 flask init-db 
 
 # Start the application server

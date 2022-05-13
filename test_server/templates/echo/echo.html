@@ -4,23 +4,30 @@
 */ #}
 {% block content %}
     <h1>Welcome to {{ config['APP_NAME'] }}</h1>
+
+    <h2>Your request was </h2>
     <p>
-        Local server time is {{ resp.now }}<br>
-        The server ip is: {{ resp.local_ip }}<br>
-        Platform: {{ resp.platform }}<br>
-        System: {{ resp.system}}<br>
-        Processor: {{ resp.processor }}<br>
-        Architecture: {{ resp.architecture }}<br>
-        The container name is {{ resp.container_name }}<br>
-        The secret key is {{ resp.secret}}<br>
+        <dl>
+        {% for key in echo %}
+        <dt>{{ key }}:</dt>
+        <dd></dd>{{ echo[key] }}</dd>
+        {% endfor %}
+        </dl>
     </p>
+
+    <!-- <h2>Server Info</h2>
     <p>
-        Testserver version is {{ resp.version }}<br>
-        Running in {{ resp.environment }} environment<br>
+        {% for key in info %}
+        {{ key }}: {{ info[key] }}<br>
+        {% endfor %}
+    </p> -->
+    
+    <h2>App version</h2>
+    <p>
+        Testserver version is {{ env.version }}<br>
+        Running in {{ env.environment }} environment<br>
     </p>
-    <p> 
-        Your request came from: {{ resp.remote_ip }}<br>
-    </p>
+
     {% if 0 < page_views %}
     <p>
         This page has been viewed {{ page_views }} times.
