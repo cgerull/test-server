@@ -5,6 +5,7 @@ import pytest
 from test_server import create_app
 from test_server.db import get_db, init_db
 
+
 with open(os.path.join(os.path.dirname(__file__), 'data.sql'), 'rb') as f:
     _data_sql = f.read().decode('utf8')
 
@@ -17,9 +18,10 @@ def app():
         'TESTING': True,
         'ENV': 'test',
         'SECRET_FILE': None,
-        'SECRET_KEY': 'dev',
-        'DATABASE': db_path,
+        'SECRET_KEY': 'unit_test',
         'DB_TYPE': 'sqlite',
+        'DB_NAME': 'UnitTest',
+        'DATABASE': db_path,
         'REDIS_SERVER': None
     })
 

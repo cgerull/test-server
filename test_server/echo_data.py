@@ -15,13 +15,13 @@ Returns simple system information.
 
 URL: /api/v1/echo
 """
-from datetime import datetime
-import socket
-import platform
+# from datetime import datetime
+# import socket
+# import platform
 
-from flask import (
-    current_app, request
-)
+# from flask import (
+#     current_app, request
+# )
 # from flask.helpers import url_for
 
 # from werkzeug.utils import redirect
@@ -33,9 +33,9 @@ class EchoData():
     local_data = {}
     headers = {}
 
-    def __init__(self, request):
+    def __init__(self, my_request):
         # self.local_data = self.set_local_data()
-        self.remote_data = self.set_remote_data(request)
+        self.remote_data = self.set_remote_data(my_request)
 
 
     # def set_local_data(self):
@@ -68,41 +68,41 @@ class EchoData():
         return self.remote_data
 
 
-    def set_remote_data(self, request): 
-        # self.remote_data = request.headers
+    def set_remote_data(self, my_request): 
+        # self.remote_data = my_request.headers
         return {
-            'remote_addr': self.get_remote_ip(request),
-            'url': request.url,
-            'url_charset': request.url_charset,
-            'referrer': request.referrer,
-            'user_agent': request.user_agent
+            'remote_addr': self.get_remote_ip(my_request),
+            'url': my_request.url,
+            'url_charset': my_request.url_charset,
+            'referrer': my_request.referrer,
+            'user_agent': my_request.user_agent
         }
         
 
-    def get_http_headers(self, request): 
-        # self.headers = self.get_remote_data(request)
+    def get_http_headers(self, my_request): 
+        # self.headers = self.get_remote_data(my_request)
         result = {}
-        for header in request.headers.envrion:
+        for header in my_request.headers.envrion:
             if header.startswith('HTTP_'):
-                result[header]=request.headers.envrion[header]
+                result[header]=my_request.headers.envrion[header]
 
         return result
         
 
-    def get_remote_ip(self, request):
+    def get_remote_ip(self, my_request):
         """
         Get client ip address, trying to resolve any
-        proxies that modify the request.
+        proxies that modify the my_request.
         """
         client_ip = ''
-        if 'HTTP_X_REAL_IP' in request.environ :
-            client_ip = request.environ['HTTP_X_REAL_IP']
-        elif 'X_REAL_IP' in request.environ :
-            client_ip = request.environ['X_REAL_IP']
-        elif 'HTTP_X_FORWARDED_FOR' in request.environ :
-            client_ip = request.environ['HTTP_X_FORWARDED_FOR']
+        if 'HTTP_X_REAL_IP' in my_request.environ :
+            client_ip = my_request.environ['HTTP_X_REAL_IP']
+        elif 'X_REAL_IP' in my_request.environ :
+            client_ip = my_request.environ['X_REAL_IP']
+        elif 'HTTP_X_FORWARDED_FOR' in my_request.environ :
+            client_ip = my_request.environ['HTTP_X_FORWARDED_FOR']
         else:
-            client_ip = request.remote_addr
+            client_ip = my_request.remote_addr
 
         return client_ip
 

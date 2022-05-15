@@ -29,6 +29,8 @@ def create_app(test_config=None):
         ENV='Intern',
         SECRET_KEY='dev',
         DB_TYPE=None,
+        DB_PATH=None,
+        DB_NAME=None,
         DATABASE=os.path.join(app.instance_path, 'test_server.sqlite'),
         REDIS_SERVER=None,
     )
