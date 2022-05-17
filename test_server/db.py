@@ -1,5 +1,4 @@
 import sqlite3
-import os
 
 import click
 from flask import current_app, g
@@ -42,8 +41,8 @@ def new_sqlite_db(db_name):
                 detect_types=sqlite3.PARSE_DECLTYPES
         )
         sqlite_db.row_factory = sqlite3.Row
-    except Exception as exc:
-        print(f"ERROR! new_db caught {exc}")
+    except sqlite3.OperationalError as exc:
+        print(f"ERROR! Can't connect to database. {exc}")
 
     return sqlite_db
 
@@ -57,8 +56,8 @@ def close_db(e=None):
         if isinstance(db, sqlite3.Connection):
         # if db is not None:
             db.close()
-    except Exception as exc:
-        print(f"Error! close_db caught {exc}")
+    except sqlite3.OperationalError as exc:
+        print(f"Error! Can't close database. {exc}")
 
 
 def setup_db(my_db):

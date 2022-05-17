@@ -52,8 +52,8 @@ def create_app(test_config=None):
         # ensure the instance folder exists
         try:
             os.makedirs(app.config['DB_PATH'])
-        except FileExistsError as exc:
-            print(f"WARNING! File already exists, reusing.")
+        except FileExistsError:
+            print("WARNING! File already exists, reusing.")
 
 
 
