@@ -15,7 +15,7 @@ install_modules:
 	pip install -r requirements-dev.txt
 
 lint:
-	pylint --disable=R,C,E0237,E1101 test_server
+	pylint --disable=R,C,E0237,E1101,W0511 test_server
 
 test:
 	pytest -vv --junitxml=test-results.xml --cov-report term-missing --cov=test_server tests/test_*.py
