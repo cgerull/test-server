@@ -29,9 +29,6 @@ def create_app(test_config=None):
         ENV='Intern',
         SECRET_KEY='dev',
         DB_TYPE=None,
-        DB_PATH=None,
-        DB_NAME=None,
-        DATABASE=os.path.join(app.instance_path, 'test_server.sqlite'),
         REDIS_SERVER=None,
     )
 
@@ -47,14 +44,17 @@ def create_app(test_config=None):
 
     # Modify database name if SQLite is used.
     if ('sqlite' == app.config['DB_TYPE']):
+        print(app.config['DB_TYPE'], app.config['DB_PATH'],app.config['DB_NAME'])
         if app.config['DB_PATH'] is None : app.config['DB_PATH'] = app.instance_path
+        if app.config['DB_NAME'] is None : app.config['DB_NAME'] = app.name
         app.config['DATABASE'] = os.path.join(app.config['DB_PATH'], app.config['DB_NAME'] + '.sqlite')
 
-    # ensure the instance folder exists
-    try:
-        os.makedirs(app.instance_path)
-    except OSError:
-        pass
+        # ensure the instance folder exists
+        try:
+            os.makedirs(app.config['DB_PATH'])
+        except FileExistsError as exc:
+            print(f"WARNING! File already exists, reusing.")
+
 
 
     # A simple page that gives the health status
