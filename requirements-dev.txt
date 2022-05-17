@@ -9,10 +9,10 @@ prometheus-flask-exporter==0.20.1
 pylint==2.12.2
 pytest>=6.2.5
 pytest-cov==3.0.0
+pytest-testinfra==6.6.0
 PyYaml==6.0
 redis==4.1.4
 Werkzeug==2.0.3
 wrapt==1.13.3
 PyHamcrest>=2.0.3
 behave>=1.2.6
-testinfra>=6.0.0
