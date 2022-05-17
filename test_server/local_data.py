@@ -1,26 +1,16 @@
 """
-server_info.py
+local_data.py
 
 Class for local system information.
-Returns a dictonary.
-
-    - get_server_info
-
-
-    timestamp,
-    platform',
-    system,
-    processor,
-    architecture,
-    local_ip
-    hostname,
-
-
+Returns dictonaries with server info and status information.
 """
 from datetime import datetime
 import socket
 import platform
 import os
+import re
+import subprocess
+
 from flask import (
     current_app
 )
@@ -32,8 +22,8 @@ class LocalData():
 
     def __init__(self):
         self.local_data = self.set_local_data()
-        self.server_info = self.set_server_info()
-        self.server_state = self.set_server_state()
+        # self.server_info = self.set_server_info()
+        # self.server_state = self.set_server_state()
 
 
     def set_server_info(self):
@@ -49,7 +39,7 @@ class LocalData():
             'System name': platform.system(),
             'Processor': platform.processor(),
             'Architecture': ' '.join(map(str,platform.architecture())),
-            # 'Server IP': socket.gethostbyname(hostname),
+            'Server IP': socket.gethostbyname(hostname),
             'Hostname': hostname,
         }
 
@@ -60,12 +50,15 @@ class LocalData():
         and load average
         """
         hostname = socket.gethostname()
+        sys_metrics = subprocess.check_output("uptime").decode("utf-8")
+        uptime = re.search(' up (.+?), \d* users', sys_metrics).group(1)
+        load = re.search(' averages: ((\d*\.\d+ ?)+)', sys_metrics).group(1)
 
         return {
             'Server time': datetime.now().isoformat(sep=' '),
             'Server IP': socket.gethostbyname(hostname),
-            'CPU load average': os.system("uptime | cut -f 4 -d ,"),
-            'Server uptime': os.system("uptime | cut -f 4,5 -d ,"),
+            'CPU load average': load,
+            'Server uptime': uptime,
         }
 
 
@@ -73,23 +66,14 @@ class LocalData():
         """ 
         Return server_info dictonary.
         """
-        return self.server_info
+        return self.set_server_info()
 
 
     def get_server_state(self):
         """ 
         Return server_state dictonary.
         """
-        return self.server_state
-
-
-    def get_uptime(self):
-        """
-        Get and trim server uptime.
-        """
-        uptime = os.system("uptime")
-        # TODO Beautify data
-        return uptime.s
+        return self.set_server_state()
 
 
     def get_secret_key(self):

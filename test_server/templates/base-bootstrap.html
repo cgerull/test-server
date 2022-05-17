@@ -14,7 +14,11 @@
     <div class="container-fluid">
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <a class="navbar-brand" href="#">Test-server</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" 
+                data-target="#navbarSupportedContent" 
+                aria-controls="navbarSupportedContent" 
+                aria-expanded="false" 
+                aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
@@ -24,23 +28,47 @@
                 </li>
 
                 <li class="nav-item">
-                <a class="nav-link disabled" href="{{ url_for('auth.register') }}" tabindex="-1" aria-disabled="true">Status</a>
+                {% if session['user_id'] %}
+                <a class="nav-link" href="{{ url_for('status.status') }}">Status</a>
+                {% else %}
+                <a class="nav-link disabled" href="{{ url_for('auth.register') }}" 
+                    tabindex="-1" 
+                    aria-disabled="true">
+                    Status</a>
+                {% endif %}
                 </li>
 
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    {% if session['user_id'] %}
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" 
+                        data-toggle="dropdown" 
+                        aria-haspopup="true" 
+                        aria-expanded="false">
                         Database
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                       <a class="dropdown-item" href="#">Blog</a>
                       <a class="dropdown-item" href="#">Log</a>
                     </div>
+                    {% else %}
+                    <a class="nav-link disabled dropdown-toggle" href="#" id="navbarDropdownMenuLink" 
+                        tabindex="-1" 
+                        aria-disabled="true"
+                        data-toggle="dropdown" 
+                        aria-haspopup="true" 
+                        aria-expanded="false">
+                        Database
+                    </a>
+                    {% endif %}
                 </li>
             </ul>
             <ul class="navbar-nav ml-auto">
                 {% if session['user_id'] %}
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" 
+                        data-toggle="dropdown" 
+                        aria-haspopup="true" 
+                        aria-expanded="false">
                         {{ g.user['username'] }}
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
