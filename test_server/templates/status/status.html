@@ -1,17 +1,22 @@
 {% extends "base-bootstrap.html" %}
 
 {% block content %}
-    <h1>Service status</h1>
+    <h1>Status</h1>
+    <h2>Server Info</h2>
     <p>
-        Local server time is {{ resp.now }}<br>
-        Server ip: {{ resp.local_ip }}<br>
-        Load average: {{ resp.load_average }}<br>
+        {% for key in server_info %}
+        {{ key }}: {{ server_info[key] }}<br>
+        {% endfor %}
     </p>
+    <h2>Server State</h2>
     <p>
-        Platform: {{ resp.platform }}<br>
-        System: {{ resp.system}}<br>
-        Processor: {{ resp.processor }}<br>
-        Architecture: {{ resp.architecture }}<br>
-        The container name is {{ resp.hostname }}<br>
+        {% for key in server_state %}
+        {{ key }}: {{ server_state[key] }}<br>
+        {% endfor %}
+    </p>
+    <h2>App Version</h2>
+    <p>
+        Testserver version is {{ env.version }}<br>
+        Running in {{ env.environment }} environment<br>
     </p>
 {% endblock %}
