@@ -84,4 +84,12 @@ def create_app(test_config=None):
     app.register_blueprint(status.bp)
     # app.add_url_rule('/status/', endpoint='index')
 
+    # 
+    # API urls
+    #
+    # Echo api returns the call with some additional information
+    from . import echo_api
+    app.register_blueprint(echo_api.bp)
+
+
     return app

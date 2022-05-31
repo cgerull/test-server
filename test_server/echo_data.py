@@ -31,7 +31,7 @@ class EchoData():
             'url': my_request.url,
             'url_charset': my_request.url_charset,
             'referrer': my_request.referrer,
-            'user_agent': my_request.user_agent
+            'user_agent': my_request.user_agent.string,
         }
         
 
