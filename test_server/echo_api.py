@@ -19,12 +19,12 @@ URL: /echo
 # import socket
 # import platform
 
-import json
+# import json
 from flask import (
-    Blueprint, current_app, request, jsonify
+    Blueprint, request, jsonify
 )
-from flask.helpers import url_for
-from werkzeug.utils import redirect
+# from flask.helpers import url_for
+# from werkzeug.utils import redirect
 
 from test_server.echo_data import EchoData
 

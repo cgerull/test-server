@@ -9,13 +9,13 @@ Server system information.
 
 URL: /status
 """
-from datetime import datetime
-import os
-import platform
-import socket
+# from datetime import datetime
+# import os
+# import platform
+# import socket
 
 from flask import (
-    Blueprint, current_app, render_template, request
+    Blueprint, current_app, render_template, flash
 )
 from test_server.local_data import LocalData
 # from flask.helpers import url_for

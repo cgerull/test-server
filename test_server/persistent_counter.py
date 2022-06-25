@@ -3,10 +3,10 @@ Redis functions.
 
 Redis connection and utility functions.
 """
-from datetime import datetime
-import redis
 import sys
+from datetime import datetime
 
+import redis
 def get_redis_connection(host, port=6379, password=None):
 # def get_redis_connection(redis_server, redis_port=6378, redis_password=""):
     """
@@ -15,7 +15,7 @@ def get_redis_connection(host, port=6379, password=None):
     redis_connection = None
     if host:
         try:
-            print("Connect to Redis service on {}".format(host))
+            print(f"Connect to Redis service on {host}.")
             # redis_connection = redis.from_url(redis_url,)
             redis_connection = redis.Redis(
                 host = host,
@@ -23,8 +23,8 @@ def get_redis_connection(host, port=6379, password=None):
                 password = password
                 )
             redis_connection.set("connected", datetime.now().isoformat(sep=' '))
-        except redis.ConnectionError as exc:
-            print("Error creating Redis connection: {}".format(exc), file=sys.stderr)
+        except redis.ConnectionError as err:
+            print(f"Error creating Redis connection: {err}", file=sys.stderr)
             redis_connection = None
 
     return redis_connection
@@ -48,9 +48,9 @@ def increment_redis_counter(redis_connection, counter='counter'):
             else:
                 redis_connection.set(counter, "1")
                 value = 1
-        except redis.ConnectionError as exc:
-            print("Error connecting to Redis: {}".format(exc), file=sys.stderr)
-    print("page_views: {}".format(value), file=sys.stderr)
+        except redis.ConnectionError as err:
+            print(f"Error connecting to Redis: {err}", file=sys.stderr)
+    print(f"page_views: {value}", file=sys.stderr)
     return value
 
 
@@ -66,6 +66,6 @@ def get_redis_counter(redis_connection, counter='counter'):
     if redis_connection:
         try:
             value = redis_connection.get(counter)
-        except redis.ConnectionError as exc:
-            print("Error connecting to Redis: {}".format(exc), file=sys.stderr)
+        except redis.ConnectionError as err:
+            print(f"Error connecting to Redis: {err}", file=sys.stderr)
     return value

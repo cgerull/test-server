@@ -31,13 +31,14 @@ from test_server.persistent_counter import increment_redis_counter
 
 from test_server.db import get_db
 
-# from test_servser.local_data import LocalData
+# from test_server.local_data import LocalData
 from test_server.echo_data import EchoData
 
 bp = Blueprint('echo', __name__, url_prefix='/')
 
 @bp.route('/')
 def index():
+    """ Redirect from / to /echo."""
     return redirect(url_for('.echo'))
 
 @bp.route('/echo', methods=['GET'])
@@ -49,7 +50,7 @@ def echo():
     # response_data = echo_data.get_local_data()
 
     page_views = 0
-    db = get_db()
+    my_db= get_db()
     error = None
     redis_connection = None
     remote_info = remote_data.get_remote_data()
@@ -60,23 +61,25 @@ def echo():
             current_app.config['REDIS_PORT'],
             current_app.config['REDIS_PASSWORD'],
             )
-    
+
     if redis_connection is not None:
         page_views = increment_redis_counter(
             redis_connection,
             current_app.config['REDIS_HTML_COUNTER'])
 
-    if db is not None:
+    if my_db is not None:
         try:
-            db.execute(
-                "INSERT INTO req_log (response_code, request_url, request_from_ip) VALUES (?, ?, ?)",
+            my_db.execute(
+                "INSERT INTO \
+                    req_log (response_code, request_url, request_from_ip) \
+                    VALUES (?, ?, ?)",
                 (200, request.url, remote_info['remote_addr']),
             )
-            db.commit()
-        except db.IntegrityError:
+            my_db.commit()
+        except my_db.IntegrityError:
             error = "Integgrity error! Can't add record to request log."
-        except db.OperationalError as e:
-            error = f"Can't add record to request log. Error: {e}"
+        except my_db.OperationalError as err:
+            error = f"Can't add record to request log. Error: {err}"
 
     remote_info = remote_data.get_remote_data()
 

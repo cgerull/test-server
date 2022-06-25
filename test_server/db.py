@@ -1,18 +1,23 @@
+"""
+Define and establish a database connection.
+"""
+
 import sqlite3
 
 import click
 from flask import current_app, g
 from flask.cli import with_appcontext
 
-
+# pylint: disable=E0237
 def get_db():
     """
     TODO: Refactor for multiple database drivers.
     """
     if 'db' not in g:
-        db = new_db()
-        if db:
-            g.db = new_db()
+        my_db= new_db()
+        if my_db:
+            # g.db= new_db()
+            g.db= my_db
         else:
             raise NameError("No valid database configured.")
 
@@ -20,12 +25,13 @@ def get_db():
 
 
 def new_db():
-    db = None
+    """ Create a database object. """
+    my_db= None
 
-    if ('sqlite' == current_app.config['DB_TYPE']):
-        db = new_sqlite_db(current_app.config['DATABASE'])
+    if 'sqlite' == current_app.config['DB_TYPE']:
+        my_db= new_sqlite_db(current_app.config['DATABASE'])
 
-    return db
+    return my_db
 
 
 def new_sqlite_db(db_name):
@@ -46,16 +52,16 @@ def new_sqlite_db(db_name):
 
     return sqlite_db
 
-def close_db(e=None):
+def close_db(event=None):
     """
     If the a database object is on the  global stack, close that object.
     """
-    db = g.pop('db', e)
+    my_db= g.pop('db', event)
 
     try:
-        if isinstance(db, sqlite3.Connection):
-        # if db is not None:
-            db.close()
+        if isinstance(my_db, sqlite3.Connection):
+        # if my_dbis not None:
+            my_db.close()
     except sqlite3.OperationalError as exc:
         print(f"Error! Can't close database. {exc}")
 
@@ -63,20 +69,20 @@ def close_db(e=None):
 def setup_db(my_db):
     """Add tables if not existing."""
     try:
-        with current_app.open_resource('sql/schema.sql') as f:
-            my_db.executescript(f.read().decode('utf8'))
+        with current_app.open_resource('sql/schema.sql') as schema:
+            my_db.executescript(schema.read().decode('utf8'))
     except sqlite3.OperationalError as exc:
         print(f"WARNING. Database already set. Caught {exc}")
 
-    
+
 def init_db():
     """
     Initialize database with the schema migrations.
     """
-    db = get_db()
+    my_db= get_db()
     try:
-        with current_app.open_resource('sql/schema.sql') as f:
-            db.executescript(f.read().decode('utf8'))
+        with current_app.open_resource('sql/schema.sql') as schema:
+            my_db.executescript(schema.read().decode('utf8'))
     except sqlite3.OperationalError as exc:
         print(f"ERROR! Initializing database. Caught {exc}")
 

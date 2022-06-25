@@ -1,3 +1,6 @@
+"""
+Test db init and close functions.
+"""
 import sqlite3
 
 import pytest
@@ -5,6 +8,7 @@ from test_server.db import get_db
 
 
 def test_get_close_db(app):
+    """ Expect the data connection is closed."""
     with app.app_context():
         db = get_db()
         assert db is get_db()
@@ -15,6 +19,7 @@ def test_get_close_db(app):
 
 
 def test_init_db_command(runner, monkeypatch):
+    """ Run init-db with monkeypatch."""
     class Recorder(object):
         called = False
 
