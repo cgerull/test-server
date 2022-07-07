@@ -5,6 +5,7 @@
 PYTHON_VERSION=3.9.13
 
 # Start from home directory
+PROJ_DIR=$(pwd)
 cd
 
 # Install build dependencies
@@ -19,3 +20,6 @@ cd Python-$PYTHON_VERSION
 make -j 2
 sudo make altinstall
 
+# Install venv in working directory
+cd $PROJ_DIR
+python3.9 -m venv .venv
