@@ -1,3 +1,8 @@
+"""
+auth.py
+
+Authentication module for testserver app.
+"""
 import functools
 
 from flask import (
@@ -11,10 +16,11 @@ bp = Blueprint('auth', __name__, url_prefix='/auth')
 
 @bp.route('/register', methods=('GET', 'POST'))
 def register():
+    """ Register a new user via UI."""
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        db = get_db()
+        db_connection = get_db()
         error = None
 
         if not username:
@@ -24,12 +30,12 @@ def register():
 
         if error is None:
             try:
-                db.execute(
+                db_connection.execute(
                     "INSERT INTO user (username, password) VALUES (?, ?)",
                     (username, generate_password_hash(password)),
                 )
-                db.commit()
-            except db.IntegrityError:
+                db_connection.commit()
+            except db_connection.IntegrityError:
                 error = f"User {username} is already registered."
             else:
                 return redirect(url_for("auth.login"))
@@ -40,12 +46,13 @@ def register():
 
 @bp.route('/login', methods=('GET', 'POST'))
 def login():
+    """ Login via UI."""
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        db = get_db()
+        db_connection = get_db()
         error = None
-        user = db.execute(
+        user = db_connection.execute(
             'SELECT * FROM user WHERE username = ?', (username,)
         ).fetchone()
 
@@ -63,8 +70,10 @@ def login():
 
     return render_template('auth/login.html')
 
+# pylint: disable=E0237
 @bp.before_app_request
 def load_logged_in_user():
+    """ Get user from session."""
     user_id = session.get('user_id')
 
     if user_id is None:
@@ -76,11 +85,13 @@ def load_logged_in_user():
 
 @bp.route('/logout')
 def logout():
+    """ Logout and clear session."""
     session.clear()
     return redirect(url_for('echo.index'))
 
 
 def login_required(view):
+    """ Redirects user to login form if required by page setting."""
     @functools.wraps(view)
     def wrapped_view(**kwargs):
         if g.user is None:

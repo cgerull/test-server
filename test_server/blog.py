@@ -1,3 +1,7 @@
+
+"""
+Example blog module
+"""
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, url_for
 )
@@ -8,10 +12,11 @@ from test_server.db import get_db
 
 bp = Blueprint('blog', __name__)
 
-@bp.route('/')
+@bp.route('/blog')
 def index():
-    db = get_db()
-    posts = db.execute(
+    """ Startpage for the blog module."""
+    my_db = get_db()
+    posts = my_db.execute(
         'SELECT p.id, title, body, created, author_id, username'
         ' FROM post p JOIN user u ON p.author_id = u.id'
         ' ORDER BY created DESC'
@@ -21,6 +26,7 @@ def index():
 @bp.route('/create', methods=('GET', 'POST'))
 @login_required
 def create():
+    """ Create a blog post."""
     if request.method == 'POST':
         title = request.form['title']
         body = request.form['body']
@@ -32,18 +38,19 @@ def create():
         if error is not None:
             flash(error)
         else:
-            db = get_db()
-            db.execute(
+            my_db = get_db()
+            my_db.execute(
                 'INSERT INTO post (title, body, author_id)'
                 ' VALUES (?, ?, ?)',
                 (title, body, g.user['id'])
             )
-            db.commit()
+            my_db.commit()
             return redirect(url_for('blog.index'))
 
     return render_template('blog/create.html')
 
 def get_post(post_id, check_author=True):
+    """ Fetch blog post from database."""
     post = get_db().execute(
         'SELECT p.id, title, body, created, author_id, username'
         ' FROM post p JOIN user u ON p.author_id = u.id'
@@ -62,6 +69,7 @@ def get_post(post_id, check_author=True):
 @bp.route('/<int:id>/update', methods=('GET', 'POST'))
 @login_required
 def update(update_id):
+    """ Update existing blog post."""
     post = get_post(update_id)
 
     if request.method == 'POST':
@@ -75,13 +83,13 @@ def update(update_id):
         if error is not None:
             flash(error)
         else:
-            db = get_db()
-            db.execute(
+            my_db = get_db()
+            my_db.execute(
                 'UPDATE post SET title = ?, body = ?'
                 ' WHERE id = ?',
                 (title, body, update_id)
             )
-            db.commit()
+            my_db.commit()
             return redirect(url_for('blog.index'))
 
     return render_template('blog/update.html', post=post)
@@ -89,9 +97,9 @@ def update(update_id):
 @bp.route('/<int:id>/delete', methods=('POST',))
 @login_required
 def delete(delete_id):
+    """ Delete a blog post."""
     get_post(delete_id)
-    db = get_db()
-    db.execute('DELETE FROM post WHERE id = ?', (delete_id,))
-    db.commit()
+    my_db = get_db()
+    my_db.execute('DELETE FROM post WHERE id = ?', (delete_id,))
+    my_db.commit()
     return redirect(url_for('blog.index'))
-

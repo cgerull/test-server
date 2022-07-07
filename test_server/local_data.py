@@ -7,7 +7,7 @@ Returns dictonaries with server info and status information.
 from datetime import datetime
 import socket
 import platform
-import os
+# import os
 import re
 import subprocess
 
@@ -16,6 +16,7 @@ from flask import (
 )
 
 class LocalData():
+    """ Defines local data to exponse in a status request."""
 
     server_info = {}
     server_state = {}
@@ -25,8 +26,8 @@ class LocalData():
         # self.server_info = self.set_server_info()
         # self.server_state = self.set_server_state()
 
-
-    def set_server_info(self):
+    @staticmethod
+    def set_server_info():
         """
         Build a dictionary with timestamp, server ip,
         server name, secret and requester ip.
@@ -43,16 +44,16 @@ class LocalData():
             'Hostname': hostname,
         }
 
-
-    def set_server_state(self):
+    @staticmethod
+    def set_server_state():
         """
         Build a dictionary with timestamp, server ip
         and load average
         """
         hostname = socket.gethostname()
         sys_metrics = subprocess.check_output("uptime").decode("utf-8")
-        uptime = re.search(' up (.+?), \d* users', sys_metrics).group(1)
-        load = re.search(' averages: ((\d*\.\d+ ?)+)', sys_metrics).group(1)
+        uptime = re.search(r' up (.+?), \d* users', sys_metrics).group(1)
+        load = re.search(r' averages: ((\d*\.\d+ ?)+)', sys_metrics).group(1)
 
         return {
             'Server time': datetime.now().isoformat(sep=' '),
@@ -63,20 +64,20 @@ class LocalData():
 
 
     def get_server_info(self):
-        """ 
+        """
         Return server_info dictonary.
         """
         return self.set_server_info()
 
 
     def get_server_state(self):
-        """ 
+        """
         Return server_state dictonary.
         """
         return self.set_server_state()
 
-
-    def get_secret_key(self):
+    @staticmethod
+    def get_secret_key():
         """
         Return secret key from:
             Docker secret file or
@@ -86,14 +87,16 @@ class LocalData():
         secret = ''
         if current_app.config['SECRET_FILE'] is not None:
             try:
-                with open(current_app.config['SECRET_FILE'], mode = 'r', encoding = 'utf_8') as file:
+                with open(current_app.config['SECRET_FILE'],
+                    mode = 'r',
+                    encoding = 'utf_8') as file:
                     secret = file.read()
             except IOError:
                 # no file, return configured secret
                 secret = current_app.config['SECRET_KEY']
         else:
             secret = current_app.config['SECRET_KEY']
-        return secret  
+        return secret
 
 
     def set_local_data(self):
