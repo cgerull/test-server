@@ -1,3 +1,6 @@
+"""
+Init testserver application.
+"""
 import os
 
 from flask import Flask
@@ -5,8 +8,10 @@ from prometheus_client import multiprocess
 from prometheus_client.core import CollectorRegistry
 from prometheus_flask_exporter import PrometheusMetrics
 
+
+# pylint: disable=C0415
 def create_app(test_config=None):
-    """ 
+    """
     Create and configure the Flask application.
 
     Arguments:
@@ -17,11 +22,11 @@ def create_app(test_config=None):
     """
 
     app = Flask(__name__, instance_relative_config=False)
-    
+
     # Initialize Prometheus metrics
     registry = CollectorRegistry()
     multiprocess.MultiProcessCollector(registry, path='/tmp')
-    metrics = PrometheusMetrics(app, registry=registry) 
+    metrics = PrometheusMetrics(app, registry=registry)
 
     # Set / load app configuration
     app.config.from_mapping(
@@ -39,15 +44,23 @@ def create_app(test_config=None):
         # load the test config if passed in
         app.config.from_mapping(test_config)
 
-    # metrics.info('testserver_info', 'Testserver info', version=app.config['VERSION'], environment=app.config['ENV'])
+    metrics.info(
+        'testserver_info',
+        'Testserver info',
+        version=app.config['VERSION'],
+        environment=app.config['ENV'])
 
 
     # Modify database name if SQLite is used.
-    if ('sqlite' == app.config['DB_TYPE']):
+    if 'sqlite' == app.config['DB_TYPE']:
         print(app.config['DB_TYPE'], app.config['DB_PATH'],app.config['DB_NAME'])
-        if app.config['DB_PATH'] is None : app.config['DB_PATH'] = app.instance_path
-        if app.config['DB_NAME'] is None : app.config['DB_NAME'] = app.name
-        app.config['DATABASE'] = os.path.join(app.config['DB_PATH'], app.config['DB_NAME'] + '.sqlite')
+        if app.config['DB_PATH'] is None:
+            app.config['DB_PATH'] = app.instance_path
+        if app.config['DB_NAME'] is None:
+            app.config['DB_NAME'] = app.name
+        app.config['DATABASE'] = os.path.join(
+                app.config['DB_PATH'],
+                app.config['DB_NAME'] + '.sqlite')
 
         # ensure the instance folder exists
         try:
@@ -61,7 +74,7 @@ def create_app(test_config=None):
     @app.route('/health')
     @metrics.do_not_track()
     def health():
-        return "{} is healthy.".format(__name__)
+        return f"{__name__} is healthy."
 
 
     # If not None, initialize database
@@ -83,5 +96,13 @@ def create_app(test_config=None):
     from . import status
     app.register_blueprint(status.bp)
     # app.add_url_rule('/status/', endpoint='index')
+
+    #
+    # API urls
+    #
+    # Echo api returns the call with some additional information
+    from . import echo_api
+    app.register_blueprint(echo_api.bp)
+
 
     return app
