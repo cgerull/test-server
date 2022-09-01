@@ -1,4 +1,4 @@
-FROM alpine:3.15
+FROM alpine:3.16
 # Use alpine linux as base image
 
 RUN apk update --no-cache \
@@ -6,7 +6,6 @@ RUN apk update --no-cache \
  && apk --no-cache add \
     python3 \
     py3-pip \
-    curl \
  && adduser --disabled-password web \
  && mkdir -p /home/web/log/ \
  && chown -R web.web /home/web/
