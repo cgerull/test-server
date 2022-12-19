@@ -30,4 +30,4 @@ EXPOSE 8080
 
 CMD sh run_gunicorn.sh
 
-HEALTHCHECK --interval=15s --timeout=5s --retries=5 CMD curl --fail http://localhost:8080/health || exit 1
+HEALTHCHECK --interval=15s --timeout=5s --retries=5 CMD wget --spider http://localhost:8080/health || exit 1
