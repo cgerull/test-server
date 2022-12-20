@@ -54,11 +54,11 @@ jobs:
           # echo VER $VER
           # echo TAG ${{ env.TAG }}
           
-          IMAGE="${{ env.IMAGE_NAME }}:${{ env.TAG}}"
+          IMAGE="${{ env.IMAGE_NAME }}:${{ env.TAG }}"
           echo "IMAGE=$IMAGE" >> $GITHUB_ENV
 
-          echo "Image name ${{ env.IMAGE }}"
-          echo "Version  ${{ env.TAG}}"
+          echo "Image name - ${{ env.IMAGE }}"
+          echo "Version - ${{ env.TAG }}"
 
       - name: Build and push
         uses: docker/build-push-action@v2
