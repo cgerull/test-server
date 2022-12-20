@@ -44,17 +44,16 @@ jobs:
           # # Strip git ref prefix from version
           if [ $(echo "${{ github.ref }}" | grep tags) ]; then
             VER=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,' | sed -e 's/^v//')
+            echo "Found TAG"
           else
             VER=latest
+            echo "No TAG found, Use latest"
           fi
+          echo "Use TAG - $VER"
           echo "TAG=$VER" >> $GITHUB_ENV
-
-          # # Use Docker `latest` tag convention
-          # [[ $VER =~ [0-9].* ]] && echo "TAG=$VER" >> $GITHUB_ENV
-          # echo VER $VER
-          # echo TAG ${{ env.TAG }}
           
           IMAGE="${{ env.IMAGE_NAME }}:${{ env.TAG }}"
+          echo "Use image tag - $IMAGE"
           echo "IMAGE=$IMAGE" >> $GITHUB_ENV
 
           echo "Image name - ${{ env.IMAGE }}"
