@@ -1,5 +1,6 @@
-FROM alpine:3.16
+FROM alpine:3.17
 # Use alpine linux as base image
+ARG DOCKER_TAG
 
 RUN apk update --no-cache \
  && apk upgrade --no-cache \
@@ -16,6 +17,7 @@ COPY test_server /home/web/test_server
 COPY requirements.txt run_gunicorn.sh wsgi.py /home/web/
 
 ENV PATH=$PATH:/home/web/.local/bin \
+    VERSION=$DOCKER_TAG \
     PORT=8080 \
     ERRLOG="-" \
     ACCESSLOG="-" \
