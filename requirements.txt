@@ -6,5 +6,5 @@ prometheus-client==0.14.1
 prometheus-flask-exporter==0.20.3
 PyYaml==6.0
 redis==4.3.4
-Werkzeug==2.2.2
+Werkzeug>=2.2.3
 wrapt==1.13.3
