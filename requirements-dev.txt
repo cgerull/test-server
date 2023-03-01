@@ -14,5 +14,5 @@ pytest-cov==3.0.0
 pytest-testinfra==6.8.0
 PyYaml==6.0
 redis==4.3.4
-Werkzeug==2.2.2
+Werkzeug>=2.2.3
 wrapt==1.13.3
