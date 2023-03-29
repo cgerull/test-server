@@ -37,7 +37,7 @@ pytest==6.2.5
 pytest-cov==3.0.0
 pytest-testinfra==6.5.0
 PyYAML==5.4.1
-redis==3.5.3
+redis==4.5.3
 regex==2021.11.10
 six==1.16.0
 testinfra==6.0.0
