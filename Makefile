@@ -2,7 +2,8 @@
 VENV := .venv
 REGISTRY := cgerull
 IMAGE := testserver
-TAG := 0.9.1
+BUILDX_PLATFORMS := "amd64 arm64 arm32make "
+TAG := 0.9.8
 PY_FILES := test_server/*.py
 TEMPLATES := test_server/templates/*
 
