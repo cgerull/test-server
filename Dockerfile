@@ -13,8 +13,8 @@ RUN apk update --no-cache \
 
 USER web
 WORKDIR /home/web
-COPY test_server /home/web/test_server
-COPY requirements.txt run_gunicorn.sh wsgi.py /home/web/
+COPY --chown=web:web test_server /home/web/test_server
+COPY --chown=web:web requirements.txt run_gunicorn.sh wsgi.py /home/web/
 
 ENV PATH=$PATH:/home/web/.local/bin \
     VERSION=$DOCKER_TAG \
