@@ -4,7 +4,6 @@ Simple test server for orchestration and deployment testing.
 
 [![CircleCI](https://circleci.com/gh/cgerull/test-server/tree/development.svg?style=svg)](https://circleci.com/gh/cgerull/test-server/tree/development)
 ![Code Quality](https://github.com/cgerull/test-server/actions/workflows/codeql-analysis.yml/badge.svg)
-![CodeQL](https://github.com/cgerull/test-server/actions/workflows/codeql-analysis.yml/badge.svg)
 ![Tests](https://github.com/cgerull/test-server/actions/workflows/unit-tests.yml/badge.svg)
 ![Publish](https://github.com/cgerull/test-server/actions/workflows/docker-publish.yml/badge.svg)
 ![Dependabot](https://img.shields.io/badge/dependabot-025E8C?style=flat&logo=dependabot&logoColor=white)
