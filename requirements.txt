@@ -1,10 +1,10 @@
 Flask==2.3.2
 Flask-Bootstrap==3.3.7.1
-gunicorn==20.1.0
+gunicorn==21.2.0
 jinja2>=3.1.2
-prometheus-client==0.14.1
-prometheus-flask-exporter==0.20.3
-PyYaml==6.0
-redis==4.5.4
+prometheus-client==0.17.1
+prometheus-flask-exporter==0.22.4
+PyYaml==6.0.1
+redis==4.6.0
 Werkzeug>=2.2.3
-wrapt==1.13.3
+wrapt==1.15.0
