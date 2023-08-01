@@ -15,9 +15,6 @@ Returns simple system information.
 
 URL: /echo
 """
-# from datetime import datetime
-# import socket
-# import platform
 
 from flask import (
     Blueprint, current_app, render_template, request, flash
@@ -27,11 +24,7 @@ from werkzeug.utils import redirect
 
 from test_server.persistent_counter import get_redis_connection
 from test_server.persistent_counter import increment_redis_counter
-# from werkzeug.security import check_password_hash, generate_password_hash
-
 from test_server.db import get_db
-
-# from test_server.local_data import LocalData
 from test_server.echo_data import EchoData
 
 bp = Blueprint('echo', __name__, url_prefix='/')
@@ -44,10 +37,7 @@ def index():
 @bp.route('/echo', methods=['GET'])
 def echo():
     """Build HTML response data and send page to requester."""
-    # local_data = LocalData()
     remote_data = EchoData(request)
-    # response_data = build_response_data()
-    # response_data = echo_data.get_local_data()
 
     page_views = 0
     my_db= get_db()
