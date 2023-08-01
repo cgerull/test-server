@@ -34,7 +34,7 @@ testserver.tar: Dockerfile $(PY_FILES) $(TEMPLATES)	## Build docker image and sa
 
 scan: 	testserver.tar	## Scan docker image
 	@docker load -i testserver-latest.tar
-	docker scan testserver:latest
+	docker scout cves testserver:latest
 
 push:	scan		## Push to registry, parameters are REGISTRY, IMAGE and TAG
 	@docker load -i testserver-latest.tar
