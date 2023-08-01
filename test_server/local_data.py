@@ -51,8 +51,15 @@ class LocalData():
         """
         hostname = socket.gethostname()
         sys_metrics = subprocess.check_output("uptime").decode("utf-8")
-        uptime = re.search(r' up (.+?), \d* users', sys_metrics).group(1)
-        load = re.search(r' averages: ((\d*\.\d+ ?)+)', sys_metrics).group(1)
+        # uptime = re.search(r' up (.+?), \d* users', sys_metrics).group(1)
+        uptime_re = re.search(r' up (.+?), \d* users', sys_metrics)
+        if uptime_re:
+            uptime = uptime_re.group(1)
+
+        # load = re.search(r' averages: ((\d*\.\d+ ?)+)', sys_metrics).group(1)
+        load_re = re.search(r' averages: ((\d*\.\d+ ?)+)', sys_metrics)
+        if load_re:
+            load = load_re.group(1)
 
         return {
             'Server time': datetime.now().isoformat(sep=' '),
