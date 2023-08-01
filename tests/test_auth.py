@@ -2,13 +2,15 @@ import pytest
 from flask import g, session
 from test_server.db import get_db
 
+register_url = '/auth/register'
 
 def test_register(client, app):
-    assert client.get('/auth/register').status_code == 200
+
+    assert client.get(register_url).status_code == 200
     response = client.post(
-        '/auth/register', data={'username': 'a', 'password': 'a'}
+        register_url, data={'username': 'a', 'password': 'a'}
     )
-    
+
     assert '/auth/login' == response.headers['Location']
 
     with app.app_context():
@@ -24,7 +26,7 @@ def test_register(client, app):
 ))
 def test_register_validate_input(client, username, password, message):
     response = client.post(
-        '/auth/register',
+        register_url,
         data={'username': username, 'password': password}
     )
     assert message in response.data
@@ -56,4 +58,3 @@ def test_logout(client, auth):
     with client:
         auth.logout()
         assert 'user_id' not in session
-        
