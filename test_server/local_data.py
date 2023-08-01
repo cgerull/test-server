@@ -7,7 +7,6 @@ Returns dictonaries with server info and status information.
 from datetime import datetime
 import socket
 import platform
-# import os
 import re
 import subprocess
 
@@ -23,8 +22,7 @@ class LocalData():
 
     def __init__(self):
         self.local_data = self.set_local_data()
-        # self.server_info = self.set_server_info()
-        # self.server_state = self.set_server_state()
+
 
     @staticmethod
     def set_server_info():
@@ -43,6 +41,7 @@ class LocalData():
             'Server IP': socket.gethostbyname(hostname),
             'Hostname': hostname,
         }
+
 
     @staticmethod
     def set_server_state():
@@ -75,6 +74,7 @@ class LocalData():
         Return server_state dictonary.
         """
         return self.set_server_state()
+
 
     @staticmethod
     def get_secret_key():
@@ -115,7 +115,4 @@ class LocalData():
             'local_ip': socket.gethostbyname(hostname),
             'container_name': hostname,
             'secret': self.get_secret_key(),
-            # 'remote_ip': get_remote_ip(),
-            # 'version': current_app.config['VERSION'],
-            # 'environment': current_app.config['ENV']
         }
