@@ -38,13 +38,14 @@
                 {% endif %}
                 </li>
 
+                {% if 'True' == config['TOOLS_ENABLED'] %}
                 <li class="nav-item dropdown">
                     {% if session['user_id'] %}
                     <a class="nav-link active dropdown-toggle" href="#" id="navbarDropdownMenuLink"
                         data-toggle="dropdown"
                         aria-haspopup="true"
                         aria-expanded="false">
-                        Database
+                        Tools
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                       <a class="dropdown-item" href="#">Blog</a>
@@ -57,10 +58,11 @@
                         data-toggle="dropdown"
                         aria-haspopup="true"
                         aria-expanded="false">
-                        Database
+                        Tools
                     </a>
                     {% endif %}
                 </li>
+                {% endif %}
             </ul>
             <ul class="navbar-nav ml-auto">
                 {% if session['user_id'] %}
