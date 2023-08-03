@@ -7,7 +7,6 @@ Returns dictonaries with server info and status information.
 from datetime import datetime
 import socket
 import platform
-# import os
 import re
 import subprocess
 
@@ -23,8 +22,7 @@ class LocalData():
 
     def __init__(self):
         self.local_data = self.set_local_data()
-        # self.server_info = self.set_server_info()
-        # self.server_state = self.set_server_state()
+
 
     @staticmethod
     def set_server_info():
@@ -44,6 +42,7 @@ class LocalData():
             'Hostname': hostname,
         }
 
+
     @staticmethod
     def set_server_state():
         """
@@ -52,8 +51,17 @@ class LocalData():
         """
         hostname = socket.gethostname()
         sys_metrics = subprocess.check_output("uptime").decode("utf-8")
-        uptime = re.search(r' up (.+?), \d* users', sys_metrics).group(1)
-        load = re.search(r' averages: ((\d*\.\d+ ?)+)', sys_metrics).group(1)
+        # uptime = re.search(r' up (.+?), \d* users', sys_metrics).group(1)
+        uptime = ""
+        uptime_re = re.search(r' up (.+?), \d* users', sys_metrics)
+        if uptime_re:
+            uptime = uptime_re.group(1)
+
+        load = ""
+        # load = re.search(r' averages: ((\d*\.\d+ ?)+)', sys_metrics).group(1)
+        load_re = re.search(r' averages: ((\d*\.\d+ ?)+)', sys_metrics)
+        if load_re:
+            load = load_re.group(1)
 
         return {
             'Server time': datetime.now().isoformat(sep=' '),
@@ -75,6 +83,7 @@ class LocalData():
         Return server_state dictonary.
         """
         return self.set_server_state()
+
 
     @staticmethod
     def get_secret_key():
@@ -115,7 +124,4 @@ class LocalData():
             'local_ip': socket.gethostbyname(hostname),
             'container_name': hostname,
             'secret': self.get_secret_key(),
-            # 'remote_ip': get_remote_ip(),
-            # 'version': current_app.config['VERSION'],
-            # 'environment': current_app.config['ENV']
         }

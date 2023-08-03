@@ -16,7 +16,6 @@ def get_redis_connection(host, port=6379, password=None):
     if host:
         try:
             print(f"Connect to Redis service on {host}.")
-            # redis_connection = redis.from_url(redis_url,)
             redis_connection = redis.Redis(
                 host = host,
                 port = port,
