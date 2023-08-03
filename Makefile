@@ -23,6 +23,7 @@ test:lint			## Execute python unit tests
 
 run:test 			## Run application local in python
 	export ENV=development && \
+	export TOOLS_ENABLED=False && \
 	./run_gunicorn.sh
 
 format:
