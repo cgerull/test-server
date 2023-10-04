@@ -53,15 +53,12 @@ def create_app(test_config=None):
 
     # Modify database name if SQLite is used.
     if 'sqlite' == app.config['DB_TYPE']:
-        print(app.config['DB_TYPE'], app.config['DB_PATH'],app.config['DB_NAME'])
         if app.config['DB_PATH'] is None:
             app.config['DB_PATH'] = app.instance_path
-        if app.config['DB_NAME'] is None:
-            app.config['DB_NAME'] = app.name
         app.config['DATABASE'] = os.path.join(
                 app.config['DB_PATH'],
                 app.config['DB_NAME'] + '.sqlite')
-
+        print(f"Database: {app.config['DB_PATH']}/{app.config['DB_NAME']}.{app.config['DB_TYPE']}")
         # ensure the instance folder exists
         try:
             os.makedirs(app.config['DB_PATH'])
