@@ -83,7 +83,7 @@ def init_db():
         with current_app.open_resource('sql/schema.sql') as schema:
             my_db.executescript(schema.read().decode('utf8'))
     except sqlite3.OperationalError as exc:
-        print(f"ERROR! Initializing database. Caught {exc}")
+        print(f"WARNING! Initializing database. Caught {exc}")
 
 
 @click.command('init-db')
