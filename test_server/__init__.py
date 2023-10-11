@@ -20,7 +20,9 @@ def create_app(test_config=None):
     Returns:
       a Flask application object
     """
-
+    print(
+        f"INFO!Flask app {__name__} started by PID {os.getpid()}."
+    )
     app = Flask(__name__, instance_relative_config=False)
 
     # Initialize Prometheus metrics
@@ -53,17 +55,27 @@ def create_app(test_config=None):
 
     # Modify database name if SQLite is used.
     if 'sqlite' == app.config['DB_TYPE']:
-        if app.config['DB_PATH'] is None:
-            app.config['DB_PATH'] = app.instance_path
-        app.config['DATABASE'] = os.path.join(
-                app.config['DB_PATH'],
-                app.config['DB_NAME'] + '.sqlite')
-        print(f"Database: {app.config['DB_PATH']}/{app.config['DB_NAME']}.{app.config['DB_TYPE']}")
-        # ensure the instance folder exists
-        try:
-            os.makedirs(app.config['DB_PATH'])
-        except FileExistsError:
-            print("WARNING! File already exists, reusing.")
+        # Prevent duplicate initialization.
+        if None is app.config.get('DATABASE'):
+            if app.config['DB_PATH'] is None:
+                app.config['DB_PATH'] = app.instance_path
+            if app.config['DB_NAME'] is None:
+                app.config['DB_NAME'] = app.name
+            app.config['DATABASE'] = os.path.join(
+                    app.config['DB_PATH'],
+                    app.config['DB_NAME'] + '.sqlite')
+            print(
+                f"INFO! Setting database {app.config['DATABASE']} ."
+                )
+
+            # ensure the instance folder exists
+            try:
+                os.makedirs(app.config['DB_PATH'])
+                print(f"INFO! Creating SQLite Path {app.config['DB_PATH']} .")
+            except FileExistsError:
+                print(
+                    f"WARNING! SQLite Path {app.config['DB_PATH']} already exists, reusing."
+                    )
 
 
 
@@ -78,6 +90,7 @@ def create_app(test_config=None):
     if app.config['DB_TYPE']:
         from . import db
         db.init_app(app)
+
 
     # Echo page returns the call with some additional information
     from . import echo
@@ -100,6 +113,5 @@ def create_app(test_config=None):
     # Echo api returns the call with some additional information
     from . import echo_api
     app.register_blueprint(echo_api.bp)
-
 
     return app
