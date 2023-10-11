@@ -56,7 +56,7 @@ def create_app(test_config=None):
     # Modify database name if SQLite is used.
     if 'sqlite' == app.config['DB_TYPE']:
         # Prevent duplicate initialization.
-        if None is app.config['DATABASE']:
+        if None is app.config.get('DATABASE'):
             if app.config['DB_PATH'] is None:
                 app.config['DB_PATH'] = app.instance_path
             if app.config['DB_NAME'] is None:
