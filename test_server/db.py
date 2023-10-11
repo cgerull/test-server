@@ -16,7 +16,6 @@ def get_db():
     if 'db' not in g:
         my_db= new_db()
         if my_db:
-            # g.db= new_db()
             g.db= my_db
         else:
             raise NameError("No valid database configured.")
