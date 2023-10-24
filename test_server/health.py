@@ -4,9 +4,10 @@ Check app health endpoint.
 """
 
 from flask import (
-    Blueprint
+    Blueprint, current_app
 )
 from test_server.db import get_db
+from test_server.persistent_counter import check_redis
 
 bp = Blueprint('health', __name__, url_prefix='/')
 
@@ -17,7 +18,7 @@ def health():
     health_msg = "testserver is healthy."
     status = 200
 
-    err = check_database() or check_redis()
+    err = check_database() or check_redis(current_app.config['REDIS_SERVER'])
 
     if err:
         health_msg = err
@@ -41,13 +42,13 @@ def check_database():
             status = f"ERROR! Can't connect to database. {err}"
     return status
 
-def check_redis():
-    '''
-    Test if the configured redis is accessible.
-    '''
-    status = ""
+# def check_redis():
+#     '''
+#     Test if the configured redis is accessible.
+#     '''
+#     status = ""
 
 
-    return status
+#     return status
 
 # Add tests when future features will be developed.
