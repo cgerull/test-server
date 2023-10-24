@@ -47,6 +47,7 @@ def check_redis():
     '''
     status = ""
 
+
     return status
 
 # Add tests when future features will be developed.

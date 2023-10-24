@@ -68,3 +68,26 @@ def get_redis_counter(redis_connection, counter='counter'):
         except redis.ConnectionError as err:
             print(f"Error connecting to Redis: {err}", file=sys.stderr)
     return value
+
+def check_redis(host, key='check_point', port=6379, password=None):
+    '''
+    Open a connection to redis, then write, read and delete
+    a KV pair to ensure Redis is configured and alive.
+    '''
+    result = ""
+    my_key = key
+    if host:
+        try:
+            print(f"Connect to Redis service on {host}.")
+            redis_connection = redis.Redis(
+                host = host,
+                port = port,
+                password = password
+                )
+            redis_connection.set(my_key, datetime.now().isoformat(sep=' '))
+            redis_connection.get(my_key)
+            redis_connection.delete(my_key)
+        except redis.ConnectionError as err:
+            result = f"Error creating Redis connection: {err}"
+            redis_connection = None
+    return result
