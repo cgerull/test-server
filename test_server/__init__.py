@@ -79,17 +79,21 @@ def create_app(test_config=None):
 
 
 
-    # A simple page that gives the health status
-    @app.route('/health')
-    @metrics.do_not_track()
-    def health():
-        return f"{__name__} is healthy."
+    # # A simple page that gives the health status
+    # @app.route('/health')
+    # @metrics.do_not_track()
+    # def health():
+    #     return f"{__name__} is healthy."
 
 
     # If not None, initialize database
     if app.config['DB_TYPE']:
         from . import db
         db.init_app(app)
+
+    # Health check and status page
+    from . import health
+    app.register_blueprint(health.bp)
 
 
     # Echo page returns the call with some additional information

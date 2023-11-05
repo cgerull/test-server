@@ -18,4 +18,4 @@ def test_app_defaults():
 def test_hello(client):
     ''' Test health endpoint. '''
     response = client.get('/health')
-    assert response.data == b'test_server is healthy.'
+    assert response.data == b'testserver is healthy.'

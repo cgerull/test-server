@@ -85,6 +85,26 @@ def init_db():
     except sqlite3.OperationalError as exc:
         print(f"WARNING! Initializing database. Caught {exc}")
 
+def check_database():
+    '''
+    Test if the configured database is accessible and configured.
+    '''
+    result = {
+        "pass": True,
+        "msg": "OK"
+    }
+    my_db= get_db()
+    if my_db is not None:
+        try:
+            my_cursor = my_db.cursor()
+            my_cursor.execute(
+                "SELECT * from req_log"
+            )
+        except my_db.OperationalError as err:
+            result['pass'] = False
+            result['msg'] = f"ERROR! Can't connect to database. {err}"
+    return result
+
 
 @click.command('init-db')
 @with_appcontext
