@@ -74,20 +74,30 @@ def check_redis(host, key='check_point', port=6379, password=None):
     Open a connection to redis, then write, read and delete
     a KV pair to ensure Redis is configured and alive.
     '''
-    result = ""
+    # result = ""
+    result = {
+        "pass": True,
+        "msg": "OK"
+    }
     my_key = key
     if host:
         try:
-            print(f"Connect to Redis service on {host}.")
+            print(f"Connecting to Redis service on {host}.")
             redis_connection = redis.Redis(
                 host = host,
                 port = port,
-                password = password
+                password = password,
+                socket_connect_timeout = 5
                 )
             redis_connection.set(my_key, datetime.now().isoformat(sep=' '))
             redis_connection.get(my_key)
             redis_connection.delete(my_key)
         except redis.ConnectionError as err:
-            result = f"Error creating Redis connection: {err}"
+            result['pass'] = False
+            result['msg'] = f"Error creating Redis connection: {err}"
+            redis_connection = None
+        except redis.TimeoutError as err:
+            result['pass'] = False
+            result['msg'] = f"Error: {err}"
             redis_connection = None
     return result
