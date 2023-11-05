@@ -5,28 +5,53 @@
 {% block content %}
     <h1>Welcome to {{ config['APP_NAME'] }}</h1>
 
-    <h2>Your request was </h2>
-    <p>
-        <dl>
+    <h2>Request </h2>
+    <table class="table table-sm table-hover table-responsive-md">
+    <tbody>
         {% for key in echo %}
-        <dt>{{ key }}:</dt>
-        <dd></dd>{{ echo[key] }}</dd>
+        <tr>
+            <td>{{ key }}</td>
+            <td>{{ echo[key] }}</td>
+        </tr>
         {% endfor %}
-        </dl>
-    </p>
+    </tbody>
+    </table>
 
+
+    <h2>Request headers </h2>
+    <p>
+        <table class="table table-sm table-hover table-responsive-md">
+        <tbody>
+        {% for key in headers %}
+        <tr>
+            <td>{{ key }}:</td>
+            <td>{{ headers[key] }}</td>
+
+        </tr>
+        {% endfor %}
+        </tbody>
+        </table>
+    </p>
     <!-- <h2>Server Info</h2>
     <p>
         {% for key in info %}
         {{ key }}: {{ info[key] }}<br>
         {% endfor %}
     </p> -->
-    
-    <h2>App version</h2>
-    <p>
-        Testserver version is {{ env.version }}<br>
-        Running in {{ env.environment }} environment<br>
-    </p>
+
+    <h2>App info</h2>
+    <table class="table table-sm table-hover table-responsive-md">
+        <tbody>
+            <tr>
+                <td>Testserver version</td>
+                <td>{{ env.version }}</td>
+            </tr>
+            <tr>
+                <td>Environment</td>
+                <td>{{ env.environment }}</td>
+            </tr>
+        </tbody>
+    </table>
 
     {% if 0 < page_views %}
     <p>

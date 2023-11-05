@@ -78,6 +78,7 @@ def echo():
 
     return render_template('echo/echo.html',
                 echo=remote_info,
+                headers=remote_data.get_http_headers(),
                 # state=local_data.get_server_state(),
                 env={
                         'version': current_app.config['VERSION'],
