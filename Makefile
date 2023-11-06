@@ -2,8 +2,8 @@
 VENV := .venv
 REGISTRY := cgerull
 IMAGE := testserver
-BUILDX_PLATFORMS := "amd64 arm64 arm32make "
-TAG := 0.9.8
+BUILDX_PLATFORMS := "amd64 arm64 arm32 "
+TAG := 0.9.9
 PY_FILES := test_server/*.py
 TEMPLATES := test_server/templates/*
 
@@ -19,7 +19,7 @@ lint:			## Run pylint
 	pylint --disable=R,C,E0237,E1101,W0511 test_server
 
 test:lint			## Execute python unit tests
-	pytest -vv --junitxml=test-results.xml --cov-report term-missing --cov=test_server tests/test_*.py
+	pytest -vv --junitxml=reports/test-results.xml --cov-report=html:reports term-missing --cov=test_server tests/test_*.py
 
 run:test 			## Run application local in python
 	export ENV=development && \
@@ -40,7 +40,7 @@ scan: 	testserver.tar	## Scan docker image
 push:	scan		## Push to registry, parameters are REGISTRY, IMAGE and TAG
 	@docker load -i testserver-latest.tar
 	@docker tag testserver:latest $(REGISTRY)/$(IMAGE):$(TAG)
-	docker push $(REGISTRY)/$(IMAGE):$(TAG)
+	# docker push $(REGISTRY)/$(IMAGE):$(TAG)
 
 clean:		## Clean all artefacts
 	find . -type f -name '*.pyc' -delete
@@ -50,17 +50,18 @@ all: install_modules lint test testserver.tar scan push clean   ## Run all comma
 
 build: testserver.tar
 
-cross-build:	## Build for configure architectures and pushes to docker hub.
-	@docker buildx create --name mybuilder --use
+cross-build: scan 	## Build for configure architectures and pushes to docker hub.
+	PROD_IMAGE=$(REGISTRY)/$(IMAGE):$(TAG)
+	@docker buildx create --name mybuilder --append --use
 	@docker buildx build --platform ${BUILDX_PLATFORMS} -t ${PROD_IMAGE} --push ./app
 
-up:		## Run docker-compose and start the container
+up:					## Run docker-compose and start the container
 	@docker-compose up -d
 
-down:		## Run docker-compose and stop the container
+down:				## Run docker-compose and stop the container
 	@docker-compose down
 
-check-health:	## Check if container is healthy
+check-health:		## Check if container is healthy
 	sleep 15
 	@docker ps | grep test-server | grep "(healthy)"
 
