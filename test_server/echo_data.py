@@ -27,7 +27,7 @@ class EchoData():
         return {
             'RemoteAddr': self.get_remote_ip(),
             'URL': self.request.url,
-            'Charset': self.request.charset,
+            # 'Charset': self.request.charset,
             'Cookies': self.request.cookies,
             'Method': f"{self.request.environ['REQUEST_METHOD']} {self.request.environ['SERVER_PROTOCOL']}",
             'QueryString': self.request.environ['QUERY_STRING'],

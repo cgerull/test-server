@@ -19,7 +19,7 @@ lint:			## Run pylint
 	pylint --disable=R,C,E0237,E1101,W0511 test_server
 
 test:lint			## Execute python unit tests
-	pytest -vv --junitxml=reports/test-results.xml --cov-report=html:reports term-missing --cov=test_server tests/test_*.py
+	pytest -vv --junitxml=reports/test-results.xml --cov-report=html:reports --cov=test_server tests/test_*.py
 
 run:test 			## Run application local in python
 	export ENV=development && \

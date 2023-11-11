@@ -50,6 +50,7 @@ def runner(app):
 
 
 class AuthActions(object):
+    """ Utility class for login simulation. """
     def __init__(self, client):
         self._client = client
 
