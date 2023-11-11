@@ -63,7 +63,7 @@ def echo():
                 "INSERT INTO \
                     req_log (response_code, request_url, request_from_ip) \
                     VALUES (?, ?, ?)",
-                (200, request.url, remote_info['remote_addr']),
+                (200, request.url, remote_info['RemoteAddr']),
             )
             my_db.commit()
         except my_db.IntegrityError:
@@ -78,6 +78,7 @@ def echo():
 
     return render_template('echo/echo.html',
                 echo=remote_info,
+                headers=remote_data.get_http_headers(),
                 # state=local_data.get_server_state(),
                 env={
                         'version': current_app.config['VERSION'],
