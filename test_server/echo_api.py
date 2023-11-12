@@ -21,12 +21,13 @@ URL: /echo
 
 # import json
 from flask import (
-    Blueprint, request, jsonify
+    Blueprint, current_app, request, jsonify
 )
 # from flask.helpers import url_for
 # from werkzeug.utils import redirect
 
 from test_server.echo_data import EchoData
+
 
 bp = Blueprint('echo_api', __name__, url_prefix='/')
 
@@ -34,9 +35,22 @@ bp = Blueprint('echo_api', __name__, url_prefix='/')
 def echo_api():
     """Build HTML response data and send page to requester."""
     # local_data = LocalData()
-    remote_data = EchoData(request)
+    request_data = EchoData(request)
     # response_data = build_response_data()
     # response_data = echo_data.get_local_data()
-    remote_info = remote_data.get_remote_data()
 
-    return jsonify(remote_info)
+    request_fields = request_data.get_remote_data()
+    request_headers = request_data.get_http_headers()
+
+    request_info ={
+        'fields': request_fields,
+        'headers': request_headers,
+        'environment': {
+                        'version': current_app.config['VERSION'],
+                        'environment': current_app.config['ENV']
+                    }
+    }
+
+    # jsonify(remote_data.get_http_headers())
+
+    return jsonify(request_info)

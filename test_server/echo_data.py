@@ -5,7 +5,7 @@ Simple class to organize the content
 of an echo request.
 """
 
-class EchoData():
+class EchoData(): # TODO: refactor to RequestData
     """
         Retrieve from request
             'remote_addr'
