@@ -1,0 +1,14 @@
+
+CREATE TABLE IF NOT EXISTS fuelling (
+  id serial PRIMARY KEY,
+  vehicle_id INT NOT NULL,
+  created TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  changed TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  odometer INT NOT NULL,
+  volume DECIMAL NOT NULL,
+  price DECIMAL NOT NULL,
+  place VARCHAR (50) Not Null,
+  CONSTRAINT fk_vehicle
+      FOREIGN KEY(vehicle_id)
+	  REFERENCES vehicle(id)
+);

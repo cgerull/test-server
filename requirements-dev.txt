@@ -16,3 +16,5 @@ PyYaml==6.0.1
 redis==4.6.0
 Werkzeug>=2.2.3
 wrapt>=1.15.0
+# Postgres development
+psycopg2-binary-2.9.9
