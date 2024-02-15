@@ -1,8 +1,6 @@
 """
 Test echo page
 """
-# import pytest
-# from test_server.db import get_db
 
 def test_echo_response(client):
     """ Happy flow, echo page."""
