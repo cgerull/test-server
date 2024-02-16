@@ -12,3 +12,5 @@ __pycache__/
 *.tar
 srv-config.yml
 test-results.xml
+local-testing/*
+scrap/*
