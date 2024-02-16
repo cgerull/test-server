@@ -4,8 +4,7 @@ Psycopg2 client test and demo module.
 # import the connect library for psycopg2
 from psycopg2 import connect
 # import the error handling libraries for psycopg2
-from psycopg2 import OperationalError, errorcodes, errors
-
+from psycopg2 import OperationalError, IntegrityError
 
 VEHICLES = [
     {
@@ -83,8 +82,7 @@ def fill_vehicle(connection, vehicles):
                 ); """)
             # Make the changes to the database persistent
             connection.commit()
-        except errors.UniqueViolation as err:
-
+        except IntegrityError as err:
             print(f"Record exists: {err}")
             connection.rollback()
     # Close cursor and communication with the database
