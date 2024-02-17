@@ -1,4 +1,7 @@
 """
+Unit tests for the authentication functionality.
+"""
+"""
 Tests for the authentication blueprint.
 """
 import pytest
