@@ -1,19 +1,27 @@
 """
 Unit tests for the authentication functionality.
 """
+"""
+Tests for the authentication blueprint.
+"""
 import pytest
 from flask import g, session
 from test_server.db import get_db
 
 REGISTER_URL = '/auth/register'
+LOGIN_URL = '/auth/login'
 
 def test_register(client, app):
     """
     Test the registration functionality.
 
-    This function tests the registration process by sending a POST request to the registration URL
-    with a username and password. It then checks if the response redirects to the login page and
-    verifies that the user is successfully added to the database.
+    This function sends a GET request to the registration URL and verifies that
+    the response status code is 200.
+    Then, it sends a POST request to the registration URL with a username
+    and password.
+    It asserts that the response redirects to the login page.
+    Finally, it checks the database to ensure that the user with the specified
+    username has been created.
 
     Args:
         client: The test client for making HTTP requests.
@@ -27,7 +35,7 @@ def test_register(client, app):
         REGISTER_URL, data={'username': 'a', 'password': 'a'}
     )
 
-    assert '/auth/login' == response.headers['Location']
+    assert LOGIN_URL == response.headers['Location']
 
     with app.app_context():
         assert get_db().execute(
@@ -45,9 +53,9 @@ def test_register_validate_input(client, username, password, message):
     Test the registration form validation.
 
     Args:
-        client (object): The test client for making HTTP requests.
-        username (str): The username to be used for registration.
-        password (str): The password to be used for registration.
+        client (TestClient): The test client for making requests.
+        username (str): The username to be registered.
+        password (str): The password to be registered.
         message (str): The expected error message.
 
     Returns:
@@ -66,15 +74,15 @@ def test_login(client, auth):
 
     This function tests the login functionality by performing the following steps:
     1. Sends a GET request to '/auth/login' and asserts that the response status code is 200.
-    2. Calls the `login` method of the `auth` object and assigns the response
-       to the `response` variable.
-    3. Asserts that the value of the 'Location' header in the response is '/'.
+    2. Calls the `login` method of the `auth` object and assigns the response to
+       the `response` variable.
+    3. Asserts that the 'Location' header of the response is '/'.
     4. Uses the `client` object in a context manager to perform additional assertions:
        - Sends a GET request to '/'.
-       - Asserts that the value of the 'user_id' key in the `session` object is 1.
-       - Asserts that the value of the 'username' key in the `g.user` object is 'test'.
+       - Asserts that the 'user_id' key in the session is equal to 1.
+       - Asserts that the 'username' key in the 'g.user' dictionary is equal to 'test'.
     """
-    assert client.get('/auth/login').status_code == 200
+    assert client.get(LOGIN_URL).status_code == 200
     response = auth.login()
     assert '/' == response.headers['Location']
 
@@ -90,10 +98,10 @@ def test_login(client, auth):
 ))
 def test_login_validate_input(auth, username, password, message):
     """
-    Test the login function to validate the input.
+    Test the login function to validate input.
 
     Args:
-        auth (Auth): An instance of the Auth class.
+        auth (Auth): The Auth object used for authentication.
         username (str): The username to be used for login.
         password (str): The password to be used for login.
         message (str): The expected message in the response data.
@@ -118,7 +126,7 @@ def test_logout(client, auth):
 
     Args:
         client: The test client for making requests.
-        auth: The authentication helper object.
+        auth: An instance of the authentication class.
 
     Returns:
         None
@@ -128,3 +136,24 @@ def test_logout(client, auth):
     with client:
         auth.logout()
         assert 'user_id' not in session
+# def test_register(client, app):
+#     response = client.get('/auth/register')
+#     assert response.status_code == 200
+
+#     response = client.post('/auth/register', data={'username': 'a', 'password': 'a'})
+#     assert response.headers['Location'] == LOGIN_URL
+
+#     with app.app_context():
+#         db = get_db()
+#         user = db.execute("SELECT * FROM user WHERE username = 'a'").fetchone()
+#         assert user is not None
+
+# def test_register_validate_input(client):
+#     response = client.post('/auth/register', data={'username': '', 'password': ''})
+#     assert b'Username is required.' in response.data
+
+#     response = client.post('/auth/register', data={'username': 'a', 'password': ''})
+#     assert b'Password is required.' in response.data
+
+#     response = client.post('/auth/register', data={'username': 'test', 'password': 'test'})
+#     assert b'User test is already registered.' in response.data
