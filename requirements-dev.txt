@@ -1,5 +1,4 @@
 behave>=1.2.6
-black==23.7.0
 Flask==2.3.2
 Flask-Bootstrap==3.3.7.1
 gunicorn==21.2.0
