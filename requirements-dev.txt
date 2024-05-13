@@ -15,6 +15,6 @@ pytest-cov==4.1.0
 pytest-testinfra==8.1.0
 PyYaml==6.0.1
 redis==5.0.3
-Werkzeug==3.0.1
+Werkzeug==3.0.3
 wrapt==1.16.0
 # Postgres development
