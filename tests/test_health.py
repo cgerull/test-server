@@ -9,4 +9,4 @@ def test_health_ok_response(client):
 def test_health_bad_response(unhealthy_client):
     """ Error flow, health page."""
     assert unhealthy_client.get(HEALTH_ENDPOINT).status_code == 500
-    assert unhealthy_client.get(HEALTH_ENDPOINT).data == b"(DB: ERROR! Can't connect to database. no such table: req_log; Redis: OK)"
+    assert unhealthy_client.get(HEALTH_ENDPOINT).data == b"(DB: ERROR! Can't connect to database. no such table: req_log)"
