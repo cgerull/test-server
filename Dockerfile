@@ -1,4 +1,4 @@
-FROM alpine:3.18
+FROM alpine:3.20
 # Use alpine linux as base image
 ARG DOCKER_TAG
 
@@ -26,7 +26,12 @@ ENV PATH=$PATH:/home/web/.local/bin \
     SECRET_KEY=DockerFileSecret
 
 # Install application
-RUN pip install --user -r requirements.txt
+# RUN pip install --user -r requirements.txt --break-system-packages
+RUN python3 -m venv venv \
+ && . venv/bin/activate \
+ && pip install --upgrade pip \
+ && pip install -r requirements.txt
+
 
 EXPOSE 8080
 

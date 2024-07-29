@@ -15,13 +15,14 @@ def get_redis_connection(host, port=6379, password=None):
     redis_connection = None
     if host:
         try:
-            print(f"Connect to Redis service on {host}.")
+            print(f"Connecting to Redis service on {host}:{port} ...")
             redis_connection = redis.Redis(
                 host = host,
                 port = port,
                 password = password
                 )
             redis_connection.set("connected", datetime.now().isoformat(sep=' '))
+            print(f"Connected to Redis service on {host}.")
         except redis.ConnectionError as err:
             print(f"Error creating Redis connection: {err}", file=sys.stderr)
             redis_connection = None
