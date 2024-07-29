@@ -1,8 +1,11 @@
 #!/bin/sh
 #
+# Activate the virtual environment
+. venv/bin/activate
+
 # Init database if defined
 export FLASK_APP=test_server
-flask init-db 
+flask init-db
 
 # Start the application server
 #     --worker-class=gevent \
