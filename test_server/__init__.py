@@ -115,7 +115,7 @@ def create_app(test_config=None):
     # API urls
     #
     # Echo api returns the call with some additional information
-    from . import echo_api
-    app.register_blueprint(echo_api.bp)
+    from . import request_api
+    app.register_blueprint(request_api.bp)
 
     return app

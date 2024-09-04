@@ -1,5 +1,5 @@
 """
-echo_api.py
+request_api.py
 
 Simple echo response to requester.
 Returns simple system information.
@@ -26,19 +26,15 @@ from flask import (
 # from flask.helpers import url_for
 # from werkzeug.utils import redirect
 
-from test_server.echo_data import EchoData
+from test_server.request_data import RequestData
 
 
-bp = Blueprint('echo_api', __name__, url_prefix='/')
+bp = Blueprint('request_api', __name__, url_prefix='/')
 
 @bp.route('/v1/echo', methods=['GET'])
-def echo_api():
+def request_api():
     """Build HTML response data and send page to requester."""
-    # local_data = LocalData()
-    request_data = EchoData(request)
-    # response_data = build_response_data()
-    # response_data = echo_data.get_local_data()
-
+    request_data = RequestData(request)
     request_fields = request_data.get_remote_data()
     request_headers = request_data.get_http_headers()
 

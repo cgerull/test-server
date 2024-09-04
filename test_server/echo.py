@@ -25,7 +25,7 @@ from werkzeug.utils import redirect
 from test_server.persistent_counter import get_redis_connection
 from test_server.persistent_counter import increment_redis_counter
 from test_server.db import get_db
-from test_server.echo_data import EchoData
+from test_server.request_data import RequestData
 
 bp = Blueprint('echo', __name__, url_prefix='/')
 
@@ -37,7 +37,7 @@ def index():
 @bp.route('/echo', methods=['GET'])
 def echo():
     """Build HTML response data and send page to requester."""
-    remote_data = EchoData(request)
+    remote_data = RequestData(request)
 
     page_views = 0
     my_db= get_db()
@@ -79,7 +79,6 @@ def echo():
     return render_template('echo/echo.html',
                 echo=remote_info,
                 headers=remote_data.get_http_headers(),
-                # state=local_data.get_server_state(),
                 env={
                         'version': current_app.config['VERSION'],
                         'environment': current_app.config['ENV']
