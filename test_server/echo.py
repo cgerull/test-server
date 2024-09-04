@@ -25,7 +25,7 @@ from werkzeug.utils import redirect
 from test_server.persistent_counter import get_redis_connection
 from test_server.persistent_counter import increment_redis_counter
 from test_server.db import get_db
-from test_server.echo_data import EchoData
+from test_server.request_data import RequestData
 
 bp = Blueprint('echo', __name__, url_prefix='/')
 
@@ -37,13 +37,13 @@ def index():
 @bp.route('/echo', methods=['GET'])
 def echo():
     """Build HTML response data and send page to requester."""
-    remote_data = EchoData(request)
+    remote_data = RequestData(request)
 
     page_views = 0
     my_db= get_db()
     error = None
     redis_connection = None
-    remote_info = remote_data.get_remote_data()
+    remote_info = remote_data.get_request_data()
 
     if current_app.config['REDIS_SERVER'] is not None:
         redis_connection = get_redis_connection(
@@ -71,7 +71,7 @@ def echo():
         except my_db.OperationalError as err:
             error = f"Can't add record to request log. Error: {err}"
 
-    remote_info = remote_data.get_remote_data()
+    remote_info = remote_data.get_request_data()
 
     if error:
         flash(error)
@@ -79,7 +79,6 @@ def echo():
     return render_template('echo/echo.html',
                 echo=remote_info,
                 headers=remote_data.get_http_headers(),
-                # state=local_data.get_server_state(),
                 env={
                         'version': current_app.config['VERSION'],
                         'environment': current_app.config['ENV']
