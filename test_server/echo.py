@@ -43,7 +43,7 @@ def echo():
     my_db= get_db()
     error = None
     redis_connection = None
-    remote_info = remote_data.get_remote_data()
+    remote_info = remote_data.get_request_data()
 
     if current_app.config['REDIS_SERVER'] is not None:
         redis_connection = get_redis_connection(
@@ -71,7 +71,7 @@ def echo():
         except my_db.OperationalError as err:
             error = f"Can't add record to request log. Error: {err}"
 
-    remote_info = remote_data.get_remote_data()
+    remote_info = remote_data.get_request_data()
 
     if error:
         flash(error)

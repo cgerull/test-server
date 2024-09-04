@@ -15,27 +15,19 @@ Returns simple system information.
 
 URL: /echo
 """
-# from datetime import datetime
-# import socket
-# import platform
-
-# import json
 from flask import (
     Blueprint, current_app, request, jsonify
 )
-# from flask.helpers import url_for
-# from werkzeug.utils import redirect
-
 from test_server.request_data import RequestData
 
-
 bp = Blueprint('request_api', __name__, url_prefix='/')
+
 
 @bp.route('/v1/echo', methods=['GET'])
 def request_api():
     """Build HTML response data and send page to requester."""
     request_data = RequestData(request)
-    request_fields = request_data.get_remote_data()
+    request_fields = request_data.get_request_data()
     request_headers = request_data.get_http_headers()
 
     request_info ={
@@ -46,7 +38,5 @@ def request_api():
                         'environment': current_app.config['ENV']
                     }
     }
-
-    # jsonify(remote_data.get_http_headers())
 
     return jsonify(request_info)
