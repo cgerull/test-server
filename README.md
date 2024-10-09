@@ -72,3 +72,8 @@ Runtime configuration via environment variables.
 | SECRET_KEY      | MySecretKey          |
 | DEBUG           | False                |
 | LOGLVL          | INFO                 |
+
+
+## Upgrade modules and dependencies
+
+```cat requirements.txt | cut -f1 -d= | xargs pip install -U```
