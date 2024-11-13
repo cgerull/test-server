@@ -10,46 +10,73 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     env:
-      IMAGE_PATH: "cgerull/testserver"
+      IMAGE_PATH: "docker.io"
+      IMAGE_NAME: "null"
       IMAGE_TAG: "null"
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4.2.2
+      
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
+        uses: docker/setup-qemu-action@v3.2.0
+      
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@v3.7.1
+
       - name: Login to DockerHub
-        uses: docker/login-action@v1
+        uses: docker/login-action@v3.3.0
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_SECRET }}
-      - name: Set image tag
+
+      # - name: Set image tag
+      #   run: |
+      #     # Strip git ref prefix from version
+      #     if [ $(echo "${{ github.ref }}" | grep tags) ]; then
+      #       VER=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,' | sed -e 's/^v//')
+      #       echo "Found TAG $VER"
+      #     else
+      #       VER=latest
+      #       echo "No TAG found, Use latest"
+      #     fi
+      #     echo "IMAGE_TAG=$VER" >> $GITHUB_ENV
+
+      # - name: Build new image name
+      #   run: |
+      #     IMAGE_NAME="${{ env.IMAGE_PATH }}:${{ env.IMAGE_TAG }}"
+      #     echo "IMAGE_NAME - $IMAGE_NAME"
+      #     echo "IMAGE_NAME=$IMAGE_NAME" >> $GITHUB_ENV
+
+      - name: Build image name and tag
         run: |
-          # Strip git ref prefix from version
-          if [ $(echo "${{ github.ref }}" | grep tags) ]; then
-            VER=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,' | sed -e 's/^v//')
-            echo "Found TAG $VER"
+          IMAGE_ID=docker.io/${{ github.repository_owner }}/$IMAGE_NAME
+          # Change all uppercase to lowercase
+          IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
+          if [[ "$GITHUB_REF_TYPE" = "branch" ]]; then
+            VERSION=latest
           else
-            VER=latest
-            echo "No TAG found, Use latest"
+            # Strip git ref prefix from version
+            VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+            # Strip "v" prefix from tag name
+            VERSION=$(echo $VERSION | sed -e 's/^v//')
           fi
-          echo "IMAGE_TAG=$VER" >> $GITHUB_ENV
-      - name: Build new image name
-        run: |
-          IMAGE_NAME="${{ env.IMAGE_PATH }}:${{ env.IMAGE_TAG }}"
-          echo "IMAGE_NAME - $IMAGE_NAME"
-          echo "IMAGE_NAME=$IMAGE_NAME" >> $GITHUB_ENV
+          echo "IMAGE_NAME=$IMAGE_ID" >> $GITHUB_ENV
+          echo "IMAGE_TAG=$VERSION" >> $GITHUB_ENV
+          
+          echo "Image name  = ${{ env.IMAGE_NAME }}"
+          echo "Image tag = ${{ env.IMAGE_TAG }}"
+
       - name: Print GitHub environment
         run: |
           echo "IMAGE_PATH - ${{ env.IMAGE_PATH }}"
           echo "IMAGE_TAG - ${{ env.IMAGE_TAG }}"
           echo "IMAGE_NAME - ${{ env.IMAGE_NAME }}"
+
       - name: Build and push
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v6.9.0
         with:
           context: .
           platforms: linux/amd64,linux/arm64,linux/arm/v7
           push: true
-          build-args: ${{ env.IMAGE_TAG}}
-          tags: ${{ env.IMAGE_NAME }}
+          build-args: 
+          tags: "${{ env.IMAGE_NAME}}:${{ env.IMAGE_TAG }}"
