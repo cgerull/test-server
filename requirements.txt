@@ -1,7 +1,7 @@
 Flask==3.0.3
 Flask-Bootstrap==3.3.7.1
 gunicorn==23.0.0
-Jinja2==3.1.4
+Jinja2==3.1.5
 prometheus_client==0.21.0
 prometheus-flask-exporter==0.23.1
 PyYaml==6.0.2
