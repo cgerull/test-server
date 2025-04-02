@@ -17,7 +17,7 @@ venv:			## Create a virtual environment
 	@[ -z "$(VIRTUAL_ENV)" ] && (echo "Run '. $(VENV)/bin/activate' to activate the virtual environment"&& exit 1) || true
 
 install:		## Install development requirements
-	$(typeset -f deactivate > /dev/null) || (echo "No virtual environment active" && exit 1)
+	@[ -z "$(VIRTUAL_ENV)" ] && (echo "No virtual environment active. Run 'source $(VENV)/bin/activate' first." && exit 1) || true
 	pip install --upgrade pip &&\
 	pip install -r requirements-dev.txt
 
@@ -42,6 +42,7 @@ testserver.tar: Dockerfile $(PY_FILES) $(TEMPLATES)	## Build docker image and sa
 	@docker save testserver -o testserver-latest.tar;
 
 scan: 	testserver.tar	## Scan docker image
+	@[ -x $(which docker) ] || (echo "Docker not found, please install or start Docker" && exit 1)
 	@docker load -i testserver-latest.tar
 	docker scout cves testserver:latest
 
@@ -56,7 +57,7 @@ push: scan 		## Build for configure architectures and pushes to docker hub.
 clean:		## Clean all artefacts
 	find . -type f -name '*.pyc' -delete
 	rm -f testserver.tar
-	@deactivate || echo "No virtual environment to deactivate"
+	@[ -z "$(VIRTUAL_ENV)" ] || deactivate
 	rm -rf $(VENV)
 	rm -rf reports
 	rm -rf .pytest_cache
