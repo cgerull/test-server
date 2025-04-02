@@ -24,7 +24,7 @@ from werkzeug.utils import redirect
 
 from test_server.persistent_counter import get_redis_connection
 from test_server.persistent_counter import increment_redis_counter
-from test_server.db import get_db
+# from test_server.db_pg import get_db
 from test_server.request_data import RequestData
 
 bp = Blueprint('echo', __name__, url_prefix='/')
@@ -40,7 +40,7 @@ def echo():
     remote_data = RequestData(request)
 
     page_views = 0
-    my_db= get_db()
+    # my_db= get_db()
     error = None
     redis_connection = None
     remote_info = remote_data.get_request_data()
@@ -57,19 +57,21 @@ def echo():
             redis_connection,
             current_app.config['REDIS_HTML_COUNTER'])
 
-    if my_db is not None:
-        try:
-            my_db.execute(
-                "INSERT INTO \
-                    req_log (response_code, request_url, request_from_ip) \
-                    VALUES (?, ?, ?)",
-                (200, request.url, remote_info['RemoteAddr']),
-            )
-            my_db.commit()
-        except my_db.IntegrityError:
-            error = "Integgrity error! Can't add record to request log."
-        except my_db.OperationalError as err:
-            error = f"Can't add record to request log. Error: {err}"
+    # if my_db is not None:
+    #     try:
+    #         my_db.execute(
+    #             "INSERT INTO \
+    #                 req_log (response_code, request_url, request_from_ip) \
+    #                 VALUES (?, ?, ?)",
+    #             (200, request.url, remote_info['RemoteAddr']),
+    #         )
+    #         my_db.commit()
+    #     except my_db.IntegrityError:
+    #         error = "Integrity error! Can't add record to request log."
+    #     except my_db.OperationalError as err:
+    #         error = f"Ops Error! Can't add record to request log. Error: {err}"
+    #     except my_db.ProgrammingError as err:
+    #         error = f"Programming Error! Can't add record to request log. Error: {err}"
 
     remote_info = remote_data.get_request_data()
 

@@ -2,7 +2,8 @@
 Define and establish a database connection.
 """
 
-import sqlite3
+from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 
 import click
 from flask import current_app, g
@@ -27,51 +28,54 @@ def new_db():
     """ Create a database object. """
     my_db= None
 
-    if 'sqlite' == current_app.config['DB_TYPE']:
-        my_db= new_sqlite_db(current_app.config['DATABASE'])
+    # if 'sqlite' == current_app.config['DB_TYPE']:
+    #     my_db= new_sqlite_db(current_app.config['DATABASE'])
 
+    if app.config['SQLALCHEMY_DATABASE_URI']:
+        my_db = SQLAlchemy(current_app)
+        # migrate = Migrate(current_app, my_db)
     return my_db
 
 
-def new_sqlite_db(db_name):
-    """
-    Create a new database. Drop old database if exists.
-    TODO: Refactor for multiple database drivers.
-    """
-    sqlite_db = None
+# def new_sqlite_db(db_name):
+#     """
+#     Create a new database. Drop old database if exists.
+#     TODO: Refactor for multiple database drivers.
+#     """
+#     sqlite_db = None
 
-    try:
-        sqlite_db = sqlite3.connect(
-                db_name,
-                detect_types=sqlite3.PARSE_DECLTYPES
-        )
-        sqlite_db.row_factory = sqlite3.Row
-    except sqlite3.OperationalError as exc:
-        print(f"ERROR! Can't connect to database. {exc}")
+#     try:
+#         sqlite_db = sqlite3.connect(
+#                 db_name,
+#                 detect_types=sqlite3.PARSE_DECLTYPES
+#         )
+#         sqlite_db.row_factory = sqlite3.Row
+#     except sqlite3.OperationalError as exc:
+#         print(f"ERROR! Can't connect to database. {exc}")
 
-    return sqlite_db
+#     return sqlite_db
 
-def close_db(event=None):
-    """
-    If the a database object is on the  global stack, close that object.
-    """
-    my_db= g.pop('db', event)
+# def close_db(event=None):
+#     """
+#     If the a database object is on the  global stack, close that object.
+#     """
+#     my_db= g.pop('db', event)
 
-    try:
-        if isinstance(my_db, sqlite3.Connection):
-        # if my_dbis not None:
-            my_db.close()
-    except sqlite3.OperationalError as exc:
-        print(f"Error! Can't close database. {exc}")
+#     try:
+#         if isinstance(my_db, sqlite3.Connection):
+#         # if my_dbis not None:
+#             my_db.close()
+#     except sqlite3.OperationalError as exc:
+#         print(f"Error! Can't close database. {exc}")
 
 
-def setup_db(my_db):
-    """Add tables if not existing."""
-    try:
-        with current_app.open_resource('sql/schema.sql') as schema:
-            my_db.executescript(schema.read().decode('utf8'))
-    except sqlite3.OperationalError as exc:
-        print(f"WARNING. Database already set. Caught {exc}")
+# def setup_db(my_db):
+#     """Add tables if not existing."""
+#     try:
+#         with current_app.open_resource('sql/schema.sql') as schema:
+#             my_db.executescript(schema.read().decode('utf8'))
+#     except sqlite3.OperationalError as exc:
+#         print(f"WARNING. Database already set. Caught {exc}")
 
 
 def init_db():

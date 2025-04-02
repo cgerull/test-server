@@ -1,9 +1,12 @@
 """
 Init testserver application.
 """
+import datetime
 import os
 
 from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 from prometheus_client import multiprocess
 from prometheus_client.core import CollectorRegistry
 from prometheus_flask_exporter import PrometheusMetrics
@@ -32,7 +35,7 @@ def create_app(test_config=None):
 
     # Set / load app configuration
     app.config.from_mapping(
-        VERSION='0.1.0',
+        VERSION='0.9.0',
         ENV='Intern',
         SECRET_KEY='dev',
         DB_TYPE=None,
@@ -87,9 +90,13 @@ def create_app(test_config=None):
 
 
     # If not None, initialize database
-    if app.config['DB_TYPE']:
-        from . import db
-        db.init_app(app)
+    if app.config['SQLALCHEMY_DATABASE_URI']:
+        db = SQLAlchemy(app)
+        migrate = Migrate(app, db)
+
+    # if app.config['DB_TYPE']:
+    #     from . import db_pg
+    #     db_pg.init_app(app)
 
     # Health check and status page
     from . import health
@@ -106,6 +113,11 @@ def create_app(test_config=None):
     from . import auth
     app.register_blueprint(auth.bp)
 
+    # User management endpoint, uses Database to store account
+    # information.
+    # from . import user_mgmnt
+    # app.register_blueprint(user_mgmnt.bp)
+
     # Print a status page
     from . import status
     app.register_blueprint(status.bp)
@@ -117,5 +129,26 @@ def create_app(test_config=None):
     # Echo api returns the call with some additional information
     from . import request_api
     app.register_blueprint(request_api.bp)
+
+    # SQL shit
+    class RequestLogs(db.Model):
+        __tablename__ = 'req_logs'
+        id = db.Column(db.Integer, primary_key=True)
+        response_code = db.Column(db.Integer, nullable=False)
+        request_url = db.Column(db.String(80), nullable=True)
+        request_from_ip = db.Column(db.String(20),nullable=True)
+        created = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+
+
+        def __init__(self, response_code, request_url, request_from_ip):
+            self.response_code = response_code
+            self.request_url = request_url
+            self.request_from_ip = request_from_ip
+
+
+        def __repr__(self):
+            return f'<Response {self.response_code}>'
+
+
 
     return app
