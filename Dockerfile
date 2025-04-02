@@ -23,7 +23,7 @@ ENV PATH=$PATH:/home/web/.local/bin \
     ACCESSLOG="-" \
     LOGFORMAT="%(h)s %(l)s %(t)s %({Server-IP}o)s %(l)s %(r)s %(s)s %(b)s %(a)s" \
     LOGLVL=INFO \
-    SECRET_KEY=DockerFileSecret
+    PROGPARAM=DockerFileSecret
 
 # Install application
 # RUN pip install --user -r requirements.txt --break-system-packages
@@ -35,6 +35,6 @@ RUN python3 -m venv venv \
 
 EXPOSE 8080
 
-CMD sh run_gunicorn.sh
+CMD [ "sh", "./run_gunicorn.sh" ]
 
 HEALTHCHECK --interval=15s --timeout=5s --retries=5 CMD wget --spider http://127.0.0.1:8080/health || exit 1
