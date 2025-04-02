@@ -12,21 +12,25 @@ help:           	## Show this help.
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
 venv:			## Create a virtual environment
-	@python3 -m venv $(VENV) && \
-	echo "Virtual environment created in $(VENV)" && \
-	echo "Run 'source $(VENV)/bin/activate' to activate the virtual environment"
+	@[ -d $(VENV) ] || (python3 -m venv $(VENV) && \
+	echo "Virtual environment created in $(VENV)") || true
+	@[ -z "$(VIRTUAL_ENV)" ] && (echo "Run '. $(VENV)/bin/activate' to activate the virtual environment"&& exit 1) || true
 
-install:	## Install development requirements
+install:		## Install development requirements
+	$(typeset -f deactivate > /dev/null) || (echo "No virtual environment active" && exit 1)
 	pip install --upgrade pip &&\
 	pip install -r requirements-dev.txt
 
 lint:			## Run pylint
+	@[ -z "$(VIRTUAL_ENV)" ] && (echo "No virtual environment active. Run 'source $(VENV)/bin/activate' first." && exit 1) || true
 	pylint --disable=R,C,E0237,E1101,W0511 test_server
 
-test:lint			## Execute python unit tests
+test:lint		## Execute python unit tests
+	@[ -z "$(VIRTUAL_ENV)" ] && (echo "No virtual environment active. Run 'source $(VENV)/bin/activate' first." && exit 1) || true
 	pytest -vv --junitxml=reports/test-results.xml --cov-report=html:reports --cov=test_server tests/test_*.py
 
-run:test 			## Run application local in python
+run:test 		## Run application local in python
+	@[ -z "$(VIRTUAL_ENV)" ] && (echo "No virtual environment active. Run 'source $(VENV)/bin/activate' first." && exit 1) || true
 	export ENV=development && \
 	export TOOLS_ENABLED=False && \
 	./run_gunicorn.sh
@@ -41,10 +45,13 @@ scan: 	testserver.tar	## Scan docker image
 	@docker load -i testserver-latest.tar
 	docker scout cves testserver:latest
 
-push:	scan		## Push to registry, parameters are REGISTRY, IMAGE and TAG
-	@docker load -i testserver-latest.tar
-	@docker tag testserver:latest $(REGISTRY)/$(IMAGE):$(TAG)
-	# docker push $(REGISTRY)/$(IMAGE):$(TAG)
+
+  ## Run all commands
+
+push: scan 		## Build for configure architectures and pushes to docker hub.
+	PROD_IMAGE=$(REGISTRY)/$(IMAGE):$(TAG)
+	@docker buildx create --name mybuilder --append --use
+	@docker buildx build --platform ${BUILDX_PLATFORMS} -t ${PROD_IMAGE} --push ./app
 
 clean:		## Clean all artefacts
 	find . -type f -name '*.pyc' -delete
@@ -57,21 +64,6 @@ clean:		## Clean all artefacts
 	rm -rf __pycache__
 	rm -rf instance
 
-all: install_modules lint test testserver.tar scan push   ## Run all commands
+all: venv install lint test scan push
 
-cross-build: scan 	## Build for configure architectures and pushes to docker hub.
-	PROD_IMAGE=$(REGISTRY)/$(IMAGE):$(TAG)
-	@docker buildx create --name mybuilder --append --use
-	@docker buildx build --platform ${BUILDX_PLATFORMS} -t ${PROD_IMAGE} --push ./app
-
-up:					## Run docker-compose and start the container
-	@docker-compose up -d
-
-down:				## Run docker-compose and stop the container
-	@docker-compose down
-
-check-health:		## Check if container is healthy
-	sleep 15
-	@docker ps | grep test-server | grep "(healthy)"
-
-.PHONY: all venv run clean scan push help cross-build
+.PHONY: all venv lint run clean scan push help
