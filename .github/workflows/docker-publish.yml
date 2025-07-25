@@ -10,7 +10,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     env:
-      IMAGE_PATH: "docker.io"
+      IMAGE_PATH: "ghcr.io"
       IMAGE_NAME: "null"
       IMAGE_TAG: "null"
     steps:
